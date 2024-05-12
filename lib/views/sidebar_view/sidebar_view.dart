@@ -5,28 +5,29 @@ import 'package:orbit/views/sidebar_view/menus/menu_shortcut_bar.dart';
 import 'package:orbit/views/sidebar_view/menus/menu_space_page_indicator.dart';
 import 'package:orbit/views/sidebar_view/menus/menu_space_page_view.dart';
 
-// a map of ("page name", WidgetBuilder) pairs
-final _availablePages = <String, WidgetBuilder>{
-  'First Page': (_) => const EmptyPage(),
-  'Second Page': (_) => const EmptyPage(),
-};
-
 class SidebarView extends StatelessWidget {
-  const SidebarView({super.key});
+  SidebarView({super.key});
+
+  final PageController controller = PageController();
+  final int count = 3;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       // appBar: AppBar(title: const Text('Menu')),
       backgroundColor: Theme.of(context).colorScheme.secondaryContainer,
-      body: const Padding(
-        padding: EdgeInsets.only(top: 25.0),
+      body: Padding(
+        padding: const EdgeInsets.only(top: 25.0),
         child: Column(
           children: [
-            MenuSearchBar(),
-            Expanded(child: MenuSpacePageView()),
-            MenuSpacePageIndicator(),
-            MenuShortcutBar(),
+            const MenuSearchBar(),
+            Expanded(
+              child: MenuSpacePageView(
+                controller: controller,
+              ),
+            ),
+            MenuSpacePageIndicator(controller: controller, count: count),
+            const MenuShortcutBar(),
           ],
         ),
       ),

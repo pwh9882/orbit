@@ -22,9 +22,9 @@ class MyApp extends StatelessWidget {
       theme: themeController.materialTheme.light(),
       darkTheme: themeController.materialTheme.dark(),
       themeMode: themeController.theme,
-      home: const SplitView(
+      home: SplitView(
         menu: SidebarView(),
-        content: ContentView(),
+        content: const ContentView(),
       ),
     );
   }
