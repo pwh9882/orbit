@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:orbit/views/sidebar_view/menus/menu_search_bar.dart';
 import 'package:orbit/views/sidebar_view/menus/menu_shortcut_bar.dart';
-import 'package:orbit/views/sidebar_view/menus/menu_space_page_indicator.dart';
 import 'package:orbit/views/sidebar_view/menus/menu_space_page_view.dart';
 
 class SidebarView extends StatelessWidget {
