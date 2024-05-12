@@ -23,30 +23,15 @@ class DatabaseManager {
 
   Future _createDB(Database db, int version) async {
     await db.execute('''
-    CREATE TABLE IF NOT EXISTS spaces (
+    CREATE TABLE IF NOT EXISTS spaceItemTreeNodes(
       id TEXT PRIMARY KEY,
-      name TEXT,
-      items TEXT
+      type TEXT NOT NULL,
+      name TEXT NOT NULL,
+      specificData TEXT,
+      parentId TEXT,
+      FOREIGN KEY (parentId) REFERENCES spaceItemTreeNodes(id)
     )
-  ''');
-
-    await db.execute('''
-    CREATE TABLE IF NOT EXISTS folders (
-      id TEXT PRIMARY KEY,
-      type TEXT,
-      name TEXT,
-      items TEXT
-    )
-  ''');
-
-    await db.execute('''
-    CREATE TABLE IF NOT EXISTS tabs (
-      id TEXT PRIMARY KEY,
-      type TEXT,
-      name TEXT,
-      url TEXT
-    )
-  ''');
+    ''');
   }
 
   Future close() async {

@@ -1,48 +1,23 @@
-import 'dart:convert';
-
-import 'package:orbit/models/space_item.dart';
+import 'package:orbit/models/space_item_tree_node.dart';
 import 'package:uuid/uuid.dart';
 
-class Folder implements SpaceItem {
+class Folder implements SpaceItemTreeNode {
   @override
-  final String id;
+  String id;
   @override
-  String name;
-
+  final SpaceItemTreeNodeType type = SpaceItemTreeNodeType.folder;
   @override
-  bool isActivated = false;
-
-  // db에 저장되될 때는 id값만 저장됨.
-  List<SpaceItem> items = [];
+  final String name;
+  @override
+  final List<SpaceItemTreeNode> children;
 
   Folder({
-    required this.id,
     required this.name,
-    this.items = const [],
-  });
+    this.children = const [],
+  }) : id = const Uuid().v4();
 
   @override
-  SpaceItemType get type => SpaceItemType.folder;
+  dynamic get specificData => null;
 
-  Folder createNewFolder({
-    String name = 'new Folder',
-  }) {
-    var uuid = const Uuid();
-    String newFolderId = uuid.v4(); // Generates a unique UUID
-    return Folder(
-      id: newFolderId,
-      name: name,
-    );
-  }
-
-  @override
-  Map<String, dynamic> toMap() {
-    return {
-      'id': id,
-      'type':
-          SpaceItemType.folder.toString(), // 'folder' -> 'SpaceItemType.folder
-      'name': name,
-      'items': jsonEncode(items.map((item) => item.toMap()).toList()),
-    };
-  }
+  bool isActivated = false; // DB에는 저장되지 않는다.
 }

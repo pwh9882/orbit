@@ -2,12 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:orbit/controllers/theme_controller.dart';
+import 'package:orbit/models/broswer.dart';
 import 'package:orbit/views/content_view/content_view.dart';
 import 'package:orbit/views/sidebar_view/sidebar_view.dart';
 import 'package:orbit/views/split_view.dart';
 
 void main() async {
   await GetStorage.init();
+  Get.put(Broswer());
   runApp(MyApp());
 }
 
@@ -22,9 +24,9 @@ class MyApp extends StatelessWidget {
       theme: themeController.materialTheme.light(),
       darkTheme: themeController.materialTheme.dark(),
       themeMode: themeController.theme,
-      home: SplitView(
+      home: const SplitView(
         menu: SidebarView(),
-        content: const ContentView(),
+        content: ContentView(),
       ),
     );
   }
