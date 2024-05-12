@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:orbit/views/custom_content_drawer.dart';
-import 'package:orbit/views/sidebar/custom_sidebar_drawer.dart';
+import 'package:orbit/views/content_view/custom_content_drawer.dart';
+import 'package:orbit/views/sidebar_view/custom_sidebar_drawer.dart';
 
 class SplitView extends StatelessWidget {
   const SplitView({
@@ -10,7 +10,7 @@ class SplitView extends StatelessWidget {
     required this.content,
     // these values are now configurable with sensible default values
     this.breakpoint = 600,
-    this.menuWidth = 240,
+    this.menuWidth = 300,
   });
   final Widget menu;
   final Widget content;

@@ -1,7 +1,6 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:orbit/controllers/custom_drawer_controller.dart';
 
 class CustomSidebarDrawerController extends GetxController
     with GetSingleTickerProviderStateMixin {
@@ -10,14 +9,12 @@ class CustomSidebarDrawerController extends GetxController
 
   RxDouble offset = 0.0.obs;
 
-  var drawerController = Get.find<CustomDrawerController>();
-
   @override
   void onInit() {
     super.onInit();
     _animationController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 300),
+      duration: const Duration(milliseconds: 200),
     );
   }
 
@@ -44,12 +41,11 @@ class CustomSidebarDrawerController extends GetxController
       Navigator.pop(context);
     }
     _animation = Tween<double>(begin: offset.value, end: 0.0).animate(
-        CurvedAnimation(
-            parent: _animationController, curve: Curves.easeInOutExpo))
+        CurvedAnimation(parent: _animationController, curve: Curves.easeInOut))
       ..addListener(() {
         updateOffset(_animation.value);
       });
-    _animationController.forward(from: 0.0);
+    _animationController.forward(from: 0);
   }
 
   @override
@@ -80,7 +76,7 @@ class CustomSidebarDrawer extends StatelessWidget {
         () => Transform.translate(
           offset: Offset(controller.offset.value, 0),
           child: Drawer(
-            width: screenWidth * 0.7,
+            width: screenWidth,
             // backgroundColor: Colors.indigo,
             child: child,
           ),

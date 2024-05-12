@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:orbit/views/sidebar/empty_page.dart';
+import 'package:orbit/views/sidebar_view/empty_page.dart';
 
 class ContentView extends StatelessWidget {
   const ContentView({super.key});

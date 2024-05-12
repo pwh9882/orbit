@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:orbit/controllers/theme_controller.dart';
-import 'package:orbit/views/content_view.dart';
-import 'package:orbit/views/sidebar/sidebar_view.dart';
+import 'package:orbit/views/content_view/content_view.dart';
+import 'package:orbit/views/sidebar_view/sidebar_view.dart';
 import 'package:orbit/views/split_view.dart';
 
 void main() async {
@@ -21,7 +21,7 @@ class MyApp extends StatelessWidget {
       title: 'Orbit',
       theme: themeController.materialTheme.light(),
       darkTheme: themeController.materialTheme.dark(),
-      themeMode: themeController.themeMode,
+      themeMode: themeController.theme,
       home: const SplitView(
         menu: SidebarView(),
         content: ContentView(),

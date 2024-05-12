@@ -9,7 +9,7 @@ class ThemeController extends GetxController {
   final _key = 'isDarkMode';
   final materialTheme = const MaterialTheme(TextTheme());
 
-  ThemeMode get themeMode => _loadTheme() ? ThemeMode.dark : ThemeMode.light;
+  ThemeMode get theme => _loadTheme() ? ThemeMode.dark : ThemeMode.light;
   bool _loadTheme() => _box.read(_key) ?? true;
 
   void saveTheme(bool isDarkMode) => _box.write(_key, isDarkMode);

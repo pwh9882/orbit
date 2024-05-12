@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:orbit/views/sidebar/empty_page.dart';
+import 'package:orbit/views/sidebar_view/empty_page.dart';
+import 'package:orbit/views/sidebar_view/menus/menu_search_bar.dart';
+import 'package:orbit/views/sidebar_view/menus/menu_shortcut_bar.dart';
+import 'package:orbit/views/sidebar_view/menus/menu_space_page_indicator.dart';
+import 'package:orbit/views/sidebar_view/menus/menu_space_page_view.dart';
 
 // a map of ("page name", WidgetBuilder) pairs
 final _availablePages = <String, WidgetBuilder>{
@@ -13,16 +17,18 @@ class SidebarView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Menu')),
-      body: ListView(
-        // Note: use ListView.builder if there are many items
-        children: <Widget>[
-          // iterate through the keys to get the page names
-          for (var pageName in _availablePages.keys)
-            PageListTile(
-              pageName: pageName,
-            ),
-        ],
+      // appBar: AppBar(title: const Text('Menu')),
+      backgroundColor: Theme.of(context).colorScheme.secondaryContainer,
+      body: const Padding(
+        padding: EdgeInsets.only(top: 25.0),
+        child: Column(
+          children: [
+            MenuSearchBar(),
+            Expanded(child: MenuSpacePageView()),
+            MenuSpacePageIndicator(),
+            MenuShortcutBar(),
+          ],
+        ),
       ),
     );
   }
