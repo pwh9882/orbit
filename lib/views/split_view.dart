@@ -32,8 +32,8 @@ class SplitView extends StatelessWidget {
           Expanded(
               child: Scaffold(
             body: content,
-            endDrawer: const CustomContentDrawer(),
-            drawerEdgeDragWidth: screenWidth * 0.5,
+            // endDrawer: const CustomContentDrawer(),
+            // drawerEdgeDragWidth: screenWidth * 0.5,
           )),
         ],
       );
@@ -47,7 +47,7 @@ class SplitView extends StatelessWidget {
             child: menu,
           ),
         ),
-        endDrawer: const CustomContentDrawer(),
+        // endDrawer: const CustomContentDrawer(),
         drawerEdgeDragWidth: screenWidth * 0.5,
       );
     }
