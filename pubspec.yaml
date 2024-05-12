@@ -41,6 +41,7 @@ dependencies:
   path: ^1.9.0
   uuid: ^4.3.3
   flutter_inappwebview: ^6.0.0
+  smooth_page_indicator: ^1.1.0
 
 dev_dependencies:
   flutter_test:
