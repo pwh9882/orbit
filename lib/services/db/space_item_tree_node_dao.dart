@@ -1,3 +1,4 @@
+import 'package:get/get.dart';
 import 'package:orbit/models/folder.dart';
 import 'package:orbit/models/space.dart';
 import 'package:orbit/models/space_item_tree_node.dart';
@@ -5,7 +6,7 @@ import 'package:orbit/models/tab.dart';
 import 'package:sqflite/sqflite.dart';
 import 'database_manager.dart';
 
-class SpaceItemDAO {
+class SpaceItemDAO extends GetxService {
   final DatabaseManager _databaseManager = DatabaseManager.instance;
 
   Future<void> insertNode(SpaceItemTreeNode node, {String? parentId}) async {
@@ -24,11 +25,22 @@ class SpaceItemDAO {
     );
 
     // 자식 노드도 재귀적으로 삽입
-    if (node.children != null) {
-      for (final child in node.children!) {
-        await insertNode(child, parentId: node.id);
-      }
+    for (final child in node.children) {
+      await insertNode(child, parentId: node.id);
     }
+  }
+
+  Future<void> updateNodeParent(String nodeId, String newParentId) async {
+    final db = await _databaseManager.database;
+
+    await db.update(
+      'spaceItemTreeNodes',
+      {
+        'parentId': newParentId,
+      },
+      where: 'id = ?',
+      whereArgs: [nodeId],
+    );
   }
 
   Future<SpaceItemTreeNode?> getNodeById(String id) async {
@@ -106,7 +118,7 @@ class SpaceItemDAO {
           children: [],
         )..id = map['id'];
       case SpaceItemTreeNodeType.tab:
-        return Tab(
+        return TabNode(
           name: map['name'],
           url: map['specificData'],
         )..id = map['id'];
@@ -150,7 +162,7 @@ class SpaceItemDAO {
     for (final childNode in childrenNodes) {
       // 각 노드의 타입에 따라 추가하며, 재귀적으로 자식 노드도 수집
       if (node is Space || node is Folder) {
-        node.children!.add(childNode);
+        node.insertChild(node.children.length, childNode);
         await _populateChildren(childNode);
       } else {
         throw Exception('Unsupported node type for children: ${node.type}');

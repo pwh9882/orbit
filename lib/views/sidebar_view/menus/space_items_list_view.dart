@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_fancy_tree_view/flutter_fancy_tree_view.dart';
 import 'package:orbit/models/space.dart';
+import 'package:orbit/models/space_item_tree_node.dart';
 
-class SpaceItemsListView extends StatelessWidget {
-  const SpaceItemsListView({
+class SpaceItemsTreeView extends StatelessWidget {
+  const SpaceItemsTreeView({
     super.key,
     required this.space,
   });
@@ -10,6 +12,14 @@ class SpaceItemsListView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // final List<SpaceItemTreeNode> roots = [
+    //   space,
+    // ];
+    // final treeController = TreeController<SpaceItemTreeNode>(
+    //   roots: roots,
+    //   childrenProvider: (SpaceItemTreeNode node) => node.children,
+    //   // parentProvider: (SpaceItemTreeNode node) => roots.contains(node) ? null : node.parent,
+    // );
     return Container(
       margin: const EdgeInsets.only(bottom: 45.0),
       color: Theme.of(context).colorScheme.secondary.withOpacity(0.2),

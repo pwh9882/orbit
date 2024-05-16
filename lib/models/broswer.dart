@@ -1,9 +1,11 @@
 import 'package:get/get.dart';
+import 'package:orbit/models/folder.dart';
 import 'package:orbit/models/space.dart';
+import 'package:orbit/models/tab.dart';
 import 'package:orbit/services/db/space_item_tree_node_dao.dart';
 
 class Broswer extends GetxController {
-  final dao = SpaceItemDAO();
+  final dao = Get.find<SpaceItemDAO>();
 
   var spaces = [].obs;
   var currentSpaceIndex = 0.obs;
@@ -31,5 +33,23 @@ class Broswer extends GetxController {
     final newSpace = Space(name: name, children: []);
     await dao.insertNode(newSpace);
     spaces.add(newSpace);
+  }
+
+  Future<void> createFolderToCurrentSpace(String name) async {
+    Space currentSpace = spaces[currentSpaceIndex.value];
+    final newFolder = Folder(name: name, children: []);
+    await dao.insertNode(newFolder, parentId: currentSpace.id);
+
+    currentSpace.insertChild(currentSpace.children.length, newFolder);
+    currentSpace.treeController?.rebuild();
+  }
+
+  Future<void> createTabToCurrentSpace(String name, String url) async {
+    Space currentSpace = spaces[currentSpaceIndex.value];
+    final newTab = TabNode(name: name, url: url);
+    await dao.insertNode(newTab, parentId: currentSpace.id);
+
+    currentSpace.insertChild(currentSpace.children.length, newTab);
+    currentSpace.treeController?.rebuild();
   }
 }

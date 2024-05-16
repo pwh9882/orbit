@@ -1,20 +1,14 @@
-import 'package:orbit/models/space_item_tree_node.dart';
 import 'package:uuid/uuid.dart';
+import 'space_item_tree_node.dart';
 
-class Folder implements SpaceItemTreeNode {
-  @override
-  String id;
-  @override
-  final SpaceItemTreeNodeType type = SpaceItemTreeNodeType.folder;
-  @override
-  final String name;
-  @override
-  final List<SpaceItemTreeNode> children;
-
+class Folder extends SpaceItemTreeNode {
   Folder({
-    required this.name,
-    this.children = const [],
-  }) : id = const Uuid().v4();
+    required super.name,
+    super.children = const [],
+  }) : super(
+          id: const Uuid().v4(),
+          type: SpaceItemTreeNodeType.folder,
+        );
 
   @override
   dynamic get specificData => null;

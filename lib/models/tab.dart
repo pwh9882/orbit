@@ -1,22 +1,17 @@
-import 'package:orbit/models/space_item_tree_node.dart';
 import 'package:uuid/uuid.dart';
+import 'space_item_tree_node.dart';
 
-class Tab implements SpaceItemTreeNode {
-  @override
-  String id;
-  @override
-  final SpaceItemTreeNodeType type = SpaceItemTreeNodeType.tab;
-  @override
-  final String name;
-  @override
-  final List<SpaceItemTreeNode>? children = null;
+class TabNode extends SpaceItemTreeNode {
+  final String url;
 
-  String url;
-
-  Tab({
-    required this.name,
+  TabNode({
+    required super.name,
     required this.url,
-  }) : id = const Uuid().v4();
+  }) : super(
+          id: const Uuid().v4(),
+          type: SpaceItemTreeNodeType.tab,
+          children: [],
+        );
 
   @override
   dynamic get specificData => url;

@@ -33,7 +33,7 @@ Future<void> addChildNode(
     newNode = Folder(name: nodeName, children: []);
   } else if (nodeType == SpaceItemTreeNodeType.tab) {
     if (url == null) throw Exception('URL is required for Tab nodes.');
-    newNode = Tab(name: nodeName, url: url);
+    newNode = TabNode(name: nodeName, url: url);
   } else {
     throw Exception('Unsupported node type for addition: $nodeType');
   }
@@ -50,8 +50,8 @@ Future<void> updateNodeDetails(SpaceItemTreeNode node, String newName,
     final updatedFolder = Folder(name: newName, children: node.children)
       ..id = node.id;
     await dao.updateNode(updatedFolder);
-  } else if (node is Tab) {
-    final updatedTab = Tab(name: newName, url: newUrl ?? node.url)
+  } else if (node is TabNode) {
+    final updatedTab = TabNode(name: newName, url: newUrl ?? node.url)
       ..id = node.id;
     await dao.updateNode(updatedTab);
   } else if (node is Space) {

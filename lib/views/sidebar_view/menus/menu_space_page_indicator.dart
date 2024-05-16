@@ -100,7 +100,37 @@ class MenuSpacePageIndicator extends StatelessWidget {
                 value: SampleItem.itemTwo,
                 child: const Text('Create New Folder'),
                 onTap: () => {
-                  debugPrint('Create New Folder'),
+                  showDialog(
+                    context: Get.context!,
+                    builder: (BuildContext context) {
+                      String folderName = '';
+                      return AlertDialog(
+                        title: const Text('Create New Folder'),
+                        content: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: <Widget>[
+                            TextField(
+                              onChanged: (value) => folderName = value,
+                              decoration: const InputDecoration(
+                                hintText: "Folder Name",
+                              ),
+                            ),
+                          ],
+                        ),
+                        actions: <Widget>[
+                          TextButton(
+                            child: const Text('Create'),
+                            onPressed: () {
+                              Get.back(); // Close the dialog
+                              if (folderName.isNotEmpty) {
+                                broswer.createFolderToCurrentSpace(folderName);
+                              }
+                            },
+                          ),
+                        ],
+                      );
+                    },
+                  )
                 },
               ),
               PopupMenuItem<SampleItem>(
@@ -136,6 +166,7 @@ class MenuSpacePageIndicator extends StatelessWidget {
                             onPressed: () {
                               Get.back(); // Close the dialog
                               if (name.isNotEmpty && url.isNotEmpty) {
+                                broswer.createTabToCurrentSpace(name, url);
                                 // spacePageViewController.createWebviewTabItem(
                                 //     name: name, url: url);
                               }

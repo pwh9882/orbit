@@ -1,20 +1,17 @@
-import 'package:orbit/models/space_item_tree_node.dart';
+import 'package:flutter_fancy_tree_view/flutter_fancy_tree_view.dart';
 import 'package:uuid/uuid.dart';
+import 'space_item_tree_node.dart';
 
-class Space implements SpaceItemTreeNode {
-  @override
-  String id;
-  @override
-  final SpaceItemTreeNodeType type = SpaceItemTreeNodeType.space;
-  @override
-  final String name;
-  @override
-  final List<SpaceItemTreeNode> children;
-
+class Space extends SpaceItemTreeNode {
   Space({
-    required this.name,
-    this.children = const [],
-  }) : id = const Uuid().v4();
+    required super.name,
+    super.children = const [],
+  }) : super(
+          id: const Uuid().v4(),
+          type: SpaceItemTreeNodeType.space,
+        );
+
+  TreeController<SpaceItemTreeNode>? treeController;
 
   @override
   dynamic get specificData => null;
