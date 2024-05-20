@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:flutter_fancy_tree_view/flutter_fancy_tree_view.dart';
 import 'package:get/get.dart';
 import 'package:orbit/models/broswer.dart';
@@ -68,7 +69,6 @@ class SpaceTreeController extends GetxController {
       },
     );
 
-    // if (details.targetNode is! Folder) return;
     (newParent ?? broswer.spaces[spaceIndex])
         .insertChild(newIndex, details.draggedNode);
 
@@ -113,7 +113,6 @@ class SpaceTreeView extends StatelessWidget {
                 '  Space ${controller.broswer.spaces[spaceIndex].name}',
                 textAlign: TextAlign.left,
                 style: const TextStyle(
-                  // fontSize: 20,
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -226,29 +225,83 @@ class TreeTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Widget content = Padding(
-      padding: const EdgeInsetsDirectional.only(end: 8),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 10),
-        child: Row(
-          children: [
-            if (entry.node is Folder)
-              IconButton(
-                icon: Icon(!entry.isExpanded || entry.node.children.isEmpty
-                    ? Icons.folder
-                    : Icons.folder_open),
-                onPressed: onFolderPressed,
-              )
-            else
-              IconButton(
-                onPressed: () => {},
-                icon: const Icon(Icons.insert_drive_file),
-              ),
-            Expanded(
-              child: Text(entry.node.name),
-            ),
-          ],
+    Widget content = Row(
+      children: [
+        if (entry.node is Folder)
+          IconButton(
+            icon: Icon(!entry.isExpanded || entry.node.children.isEmpty
+                ? Icons.folder
+                : Icons.folder_open),
+            onPressed: onFolderPressed,
+          )
+        else
+          IconButton(
+            onPressed: () => {},
+            icon: const Icon(Icons.insert_drive_file),
+          ),
+        Expanded(
+          child: Text(entry.node.name),
         ),
+      ],
+    );
+
+    content = GestureDetector(
+      onTap: () {
+        Fluttertoast.showToast(
+          msg: "Node tapped: ${entry.node.name}",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+        );
+        if (entry.node is Folder && onFolderPressed != null) {
+          onFolderPressed!();
+        }
+      },
+      onLongPress: () {
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: const Text('Options'),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  ListTile(
+                    leading: const Icon(Icons.edit),
+                    title: const Text('Edit'),
+                    onTap: () {
+                      // TODO: Implement edit functionality
+                      Navigator.pop(context);
+                    },
+                  ),
+                  ListTile(
+                    leading: const Icon(Icons.delete),
+                    title: const Text('Delete'),
+                    onTap: () {
+                      // TODO: Implement delete functionality
+                      Navigator.pop(context);
+                    },
+                  ),
+                ],
+              ),
+            );
+          },
+        );
+      },
+      child: content,
+    );
+
+    // Apply background color and radius
+    content = Padding(
+      padding: const EdgeInsets.only(left: 10, right: 10, top: 3, bottom: 3),
+      child: Container(
+        decoration: BoxDecoration(
+          // color: entry.isSelected
+          //     ? Colors.blue.withOpacity(.2)
+          //     : Colors.transparent,
+          color: context.theme.colorScheme.shadow.withOpacity(.2),
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: content,
       ),
     );
 
