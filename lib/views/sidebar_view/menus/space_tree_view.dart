@@ -51,7 +51,7 @@ class SpaceTreeController extends GetxController {
     details.mapDropPosition(
       whenAbove: () {
         newParent = details.targetNode.parent;
-        newIndex = details.targetNode.index;
+        newIndex = details.targetNode.nodeIndex;
       },
       whenInside: () {
         if (details.targetNode is Folder || details.targetNode is Space) {
@@ -60,12 +60,12 @@ class SpaceTreeController extends GetxController {
           treeController.setExpansionState(details.targetNode, true);
         } else {
           newParent = details.draggedNode.parent;
-          newIndex = details.draggedNode.index;
+          newIndex = details.draggedNode.nodeIndex;
         }
       },
       whenBelow: () {
         newParent = details.targetNode.parent;
-        newIndex = details.targetNode.index + 1;
+        newIndex = details.targetNode.nodeIndex + 1;
       },
     );
 
@@ -242,6 +242,7 @@ class TreeTile extends StatelessWidget {
         Expanded(
           child: Text(entry.node.name),
         ),
+        Text(entry.node.nodeIndex.toString()),
       ],
     );
 

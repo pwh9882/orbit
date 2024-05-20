@@ -19,7 +19,7 @@ Future<List<Space>> loadInitialTree() async {
 Future<void> addRootNode(String name) async {
   final dao = SpaceItemDAO();
   final newSpace = Space(name: name, children: []);
-  await dao.insertNode(newSpace);
+  // await dao.insertNode(newSpace);
 }
 
 // 특정 노드의 자식으로 추가할 때는 insertNode 함수에 parentId를 명시하여 자식 노드를 삽입합니다.
@@ -38,7 +38,7 @@ Future<void> addChildNode(
     throw Exception('Unsupported node type for addition: $nodeType');
   }
 
-  await dao.insertNode(newNode, parentId: parent.id);
+  // await dao.insertNode(newNode, parentId: parent.id);
 }
 
 // 노드의 이름이나 특정 데이터를 수정할 때에는 updateNode를 사용합니다.
@@ -90,5 +90,5 @@ Future<void> loadInitialTreeStructure() async {
 Future<void> addNewSpace(String name) async {
   final dao = SpaceItemDAO();
   final newSpace = Space(name: name, children: []);
-  await dao.insertNode(newSpace);
+  // await dao.insertNode(newSpace);
 }

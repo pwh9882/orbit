@@ -9,7 +9,8 @@ import 'database_manager.dart';
 class SpaceItemDAO extends GetxService {
   final DatabaseManager _databaseManager = DatabaseManager.instance;
 
-  Future<void> insertNode(SpaceItemTreeNode node, {String? parentId}) async {
+  Future<void> insertNode(SpaceItemTreeNode node,
+      {String? parentId, required int index}) async {
     final db = await _databaseManager.database;
 
     await db.insert(
@@ -20,43 +21,46 @@ class SpaceItemDAO extends GetxService {
         'name': node.name,
         'specificData': node.specificData?.toString(),
         'parentId': parentId,
+        'nodeIndex': index,
       },
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
 
-    // 자식 노드도 재귀적으로 삽입
     for (final child in node.children) {
-      await insertNode(child, parentId: node.id);
+      await insertNode(child, parentId: node.id, index: child.nodeIndex);
     }
   }
 
-  Future<void> updateNodeParent(String nodeId, String newParentId) async {
+  Future<void> updateNodeParent(
+      String nodeId, String newParentId, int newIndex) async {
     final db = await _databaseManager.database;
 
     await db.update(
       'spaceItemTreeNodes',
       {
         'parentId': newParentId,
+        'nodeIndex': newIndex,
       },
       where: 'id = ?',
       whereArgs: [nodeId],
     );
   }
 
-  Future<SpaceItemTreeNode?> getNodeById(String id) async {
+  Future<void> syncChildNodeIndexes(SpaceItemTreeNode node) async {
     final db = await _databaseManager.database;
-
-    final maps = await db.query(
-      'spaceItemTreeNodes',
-      where: 'id = ?',
-      whereArgs: [id],
-    );
-
-    if (maps.isNotEmpty) {
-      return _mapToNode(maps.first);
-    }
-
-    return null;
+    await db.transaction((txn) async {
+      final children = node.children.toList();
+      for (int i = 0; i < children.length; i++) {
+        await txn.update(
+          'spaceItemTreeNodes',
+          {
+            'nodeIndex': i,
+          },
+          where: 'id = ?',
+          whereArgs: [children[i].id],
+        );
+      }
+    });
   }
 
   Future<List<SpaceItemTreeNode>> getChildren(String parentId) async {
@@ -66,6 +70,7 @@ class SpaceItemDAO extends GetxService {
       'spaceItemTreeNodes',
       where: 'parentId = ?',
       whereArgs: [parentId],
+      orderBy: 'nodeIndex ASC',
     );
 
     return maps.map((map) => _mapToNode(map)).toList();
@@ -79,6 +84,7 @@ class SpaceItemDAO extends GetxService {
       {
         'name': node.name,
         'specificData': node.specificData?.toString(),
+        'nodeIndex': node.nodeIndex,
       },
       where: 'id = ?',
       whereArgs: [node.id],
@@ -94,7 +100,6 @@ class SpaceItemDAO extends GetxService {
       whereArgs: [id],
     );
 
-    // 자식 노드도 재귀적으로 삭제
     final children = await getChildren(id);
     for (final child in children) {
       await deleteNode(child.id);
@@ -143,7 +148,7 @@ class SpaceItemDAO extends GetxService {
         name: 'Default Space',
         children: [],
       );
-      await insertNode(defaultSpace);
+      await insertNode(defaultSpace, index: 0);
       return [defaultSpace];
     }
 

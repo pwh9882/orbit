@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:orbit/models/folder.dart';
 import 'package:orbit/models/space.dart';
@@ -31,14 +32,15 @@ class Broswer extends GetxController {
   // 최상위 Space 노드를 추가하는 경우에는 insertNode를 사용하여 루트 노드를 삽입합니다.
   Future<void> createSpace(String name) async {
     final newSpace = Space(name: name, children: []);
-    await dao.insertNode(newSpace);
+    await dao.insertNode(newSpace, index: spaces.length);
     spaces.add(newSpace);
   }
 
   Future<void> createFolderToCurrentSpace(String name) async {
     Space currentSpace = spaces[currentSpaceIndex.value];
     final newFolder = Folder(name: name, children: []);
-    await dao.insertNode(newFolder, parentId: currentSpace.id);
+    // await dao.insertNode(newFolder,
+    //     parentId: currentSpace.id, index: currentSpace.children.length);
 
     currentSpace.insertChild(currentSpace.children.length, newFolder);
     currentSpace.treeController?.rebuild();
@@ -47,7 +49,9 @@ class Broswer extends GetxController {
   Future<void> createTabToCurrentSpace(String name, String url) async {
     Space currentSpace = spaces[currentSpaceIndex.value];
     final newTab = TabNode(name: name, url: url);
-    await dao.insertNode(newTab, parentId: currentSpace.id);
+    // await dao.insertNode(newTab,
+    //     parentId: currentSpace.id, index: currentSpace.children.length);
+    // debugPrint(currentSpace.children.length.toString());
 
     currentSpace.insertChild(currentSpace.children.length, newTab);
     currentSpace.treeController?.rebuild();
