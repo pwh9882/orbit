@@ -262,7 +262,10 @@ class TreeTile extends StatelessWidget {
             icon: const Icon(Icons.insert_drive_file),
           ),
         Expanded(
-          child: Text(entry.node.name),
+          child: Text(
+            entry.node.name,
+            overflow: TextOverflow.ellipsis,
+          ),
         ),
         Text(entry.node.nodeIndex.toString()),
       ],
