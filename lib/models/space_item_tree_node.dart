@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:get/get.dart';
 import 'package:orbit/services/db/space_item_tree_node_dao.dart';
 
@@ -64,6 +66,13 @@ abstract class SpaceItemTreeNode {
     // Remove the node from the parent's children list
     _children.remove(node);
     spaceItemDAO.syncChildNodeIndexes(this);
+  }
+
+  Future<void> updateNodeName(String newName) async {
+    final spaceItemDAO = Get.find<SpaceItemDAO>();
+
+    name = newName;
+    await spaceItemDAO.updateNode(this);
   }
 
   dynamic get specificData; // 각 노드 타입에 특화된 데이터를 반환하는 추상 프로퍼티

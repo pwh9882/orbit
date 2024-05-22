@@ -162,6 +162,10 @@ class SpaceTreeView extends StatelessWidget {
                     onNodeDeletePressed: () {
                       controller.onNodeDeletePressed(entry);
                     },
+                    onNodeNameRenamed: () {
+                      entry.node.updateNodeName(entry.node.name);
+                      controller.treeController.rebuild();
+                    },
                   );
                 },
               ),
@@ -178,6 +182,7 @@ class DragAndDropTreeTile extends StatelessWidget {
   final TreeDragTargetNodeAccepted<SpaceItemTreeNode> onNodeAccepted;
   final VoidCallback? onFolderPressed;
   final VoidCallback onNodeDeletePressed;
+  final VoidCallback onNodeNameRenamed;
 
   const DragAndDropTreeTile({
     super.key,
@@ -185,6 +190,7 @@ class DragAndDropTreeTile extends StatelessWidget {
     required this.onNodeAccepted,
     this.onFolderPressed,
     required this.onNodeDeletePressed,
+    required this.onNodeNameRenamed,
   });
 
   @override
@@ -222,6 +228,7 @@ class DragAndDropTreeTile extends StatelessWidget {
               child: TreeTile(
                 entry: entry,
                 onNodeDeletePressed: onNodeDeletePressed,
+                onNodeNameRenamed: onNodeNameRenamed,
               ),
             ),
           ),
@@ -233,6 +240,7 @@ class DragAndDropTreeTile extends StatelessWidget {
                 showIndentation: false,
                 onFolderPressed: () {},
                 onNodeDeletePressed: onNodeDeletePressed,
+                onNodeNameRenamed: onNodeNameRenamed,
               ),
             ),
           ),
@@ -241,6 +249,7 @@ class DragAndDropTreeTile extends StatelessWidget {
             onFolderPressed:
                 entry.node.children.isEmpty ? null : onFolderPressed,
             onNodeDeletePressed: onNodeDeletePressed,
+            onNodeNameRenamed: onNodeNameRenamed,
             decoration: decoration,
           ),
         );
@@ -253,6 +262,7 @@ class TreeTile extends StatelessWidget {
   final TreeEntry<SpaceItemTreeNode> entry;
   final VoidCallback? onFolderPressed;
   final VoidCallback onNodeDeletePressed;
+  final VoidCallback onNodeNameRenamed;
   final Decoration? decoration;
   final bool showIndentation;
 
@@ -261,6 +271,7 @@ class TreeTile extends StatelessWidget {
     required this.entry,
     this.onFolderPressed,
     required this.onNodeDeletePressed,
+    required this.onNodeNameRenamed,
     this.decoration,
     this.showIndentation = true,
   });
@@ -319,9 +330,47 @@ class TreeTile extends StatelessWidget {
                     leading: const Icon(Icons.edit),
                     title: const Text('Edit'),
                     onTap: () {
-                      // TODO: Implement edit functionality
-
                       Navigator.pop(context);
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          String userInput = '';
+                          return AlertDialog(
+                            title: const Text('Edit Name'),
+                            content: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: <Widget>[
+                                TextField(
+                                  controller: TextEditingController()
+                                    ..text = entry.node.name,
+                                  onChanged: (value) => userInput = value,
+                                  decoration: const InputDecoration(
+                                    labelText: "Name",
+                                  ),
+                                ),
+                                // TextField(
+                                //   onChanged: (value) => url = value,
+                                //   decoration: const InputDecoration(
+                                //     hintText: "URL",
+                                //   ),
+                                // ),
+                              ],
+                            ),
+                            actions: <Widget>[
+                              TextButton(
+                                child: const Text('Save'),
+                                onPressed: () {
+                                  Get.back(); // Close the dialog
+                                  if (userInput.isNotEmpty) {
+                                    entry.node.name = userInput;
+                                    onNodeNameRenamed();
+                                  }
+                                },
+                              ),
+                            ],
+                          );
+                        },
+                      );
                     },
                   ),
                   ListTile(
