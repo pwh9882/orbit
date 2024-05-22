@@ -2,6 +2,7 @@ import 'package:get/get.dart';
 import 'package:orbit/models/folder.dart';
 import 'package:orbit/models/space.dart';
 import 'package:orbit/models/tab.dart';
+import 'package:orbit/models/url_parser.dart';
 import 'package:orbit/services/db/space_item_tree_node_dao.dart';
 
 class Broswer extends GetxController {
@@ -45,9 +46,12 @@ class Broswer extends GetxController {
     currentSpace.treeController?.rebuild();
   }
 
-  Future<void> createTabToCurrentSpace(String name, String url) async {
+  Future<void> createTabToCurrentSpace(String userInput) async {
     Space currentSpace = spaces[currentSpaceIndex.value];
-    final newTab = TabNode(name: name, url: url);
+    // var urlPaswer = UrlParser();
+    var url = UrlParser().parse(userInput);
+
+    final newTab = TabNode(name: url, url: url);
     // await dao.insertNode(newTab,
     //     parentId: currentSpace.id, index: currentSpace.children.length);
     // debugPrint(currentSpace.children.length.toString());

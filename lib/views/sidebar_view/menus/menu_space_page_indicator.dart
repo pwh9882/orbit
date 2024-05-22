@@ -136,47 +136,7 @@ class MenuSpacePageIndicator extends StatelessWidget {
               PopupMenuItem<SampleItem>(
                 value: SampleItem.itemThree,
                 child: const Text('Create New Tab'),
-                onTap: () {
-                  debugPrint('Create New Tab');
-                  showDialog(
-                    context: Get.context!,
-                    builder: (BuildContext context) {
-                      String name = '';
-                      String url = '';
-                      return AlertDialog(
-                        title: const Text('Create New Tab'),
-                        content: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: <Widget>[
-                            TextField(
-                              onChanged: (value) => name = value,
-                              decoration:
-                                  const InputDecoration(hintText: "Tab Name"),
-                            ),
-                            TextField(
-                              onChanged: (value) => url = value,
-                              decoration:
-                                  const InputDecoration(hintText: "URL"),
-                            ),
-                          ],
-                        ),
-                        actions: <Widget>[
-                          TextButton(
-                            child: const Text('Create'),
-                            onPressed: () {
-                              Get.back(); // Close the dialog
-                              if (name.isNotEmpty && url.isNotEmpty) {
-                                broswer.createTabToCurrentSpace(name, url);
-                                // spacePageViewController.createWebviewTabItem(
-                                //     name: name, url: url);
-                              }
-                            },
-                          ),
-                        ],
-                      );
-                    },
-                  );
-                },
+                onTap: () {},
               ),
             ],
             offset: const Offset(-120, -165), // 팝업 메뉴의 위치를 위로 조정
