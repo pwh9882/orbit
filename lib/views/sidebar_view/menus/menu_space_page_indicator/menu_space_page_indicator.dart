@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:orbit/models/broswer.dart';
+import 'package:orbit/views/sidebar_view/menus/menu_space_page_indicator/reorderable_smooth_page_indicator.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class MenuSpacePageIndicator extends StatelessWidget {
@@ -29,7 +30,7 @@ class MenuSpacePageIndicator extends StatelessWidget {
             ),
           ),
           Obx(
-            () => SmoothPageIndicator(
+            () => ReorderableSmoothPageIndicator(
               controller: pageviewController,
               count: broswer.spaces.length,
               effect: ScrollingDotsEffect(

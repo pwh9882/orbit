@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:orbit/models/broswer.dart';
-import 'package:orbit/views/sidebar_view/menus/menu_space_page_indicator.dart';
+import 'package:orbit/views/sidebar_view/menus/menu_space_page_indicator/menu_space_page_indicator.dart';
 import 'package:orbit/views/sidebar_view/menus/space_tree_view.dart';
 
 class MenuSpacePageView extends StatelessWidget {
@@ -12,8 +12,9 @@ class MenuSpacePageView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Obx(() {
-      final pageviewController =
-          PageController(initialPage: broswer.currentSpaceIndex.value);
+      final pageviewController = PageController(
+        initialPage: broswer.currentSpaceIndex.value,
+      );
       return Column(
         children: <Widget>[
           Expanded(
