@@ -1,3 +1,7 @@
+import 'dart:math';
+
+import 'package:flutter/material.dart';
+import 'package:flutter/src/widgets/page_view.dart';
 import 'package:get/get.dart';
 import 'package:orbit/models/folder.dart';
 import 'package:orbit/models/space.dart';
@@ -10,6 +14,8 @@ class Broswer extends GetxController {
 
   var spaces = [].obs;
   var currentSpaceIndex = 0.obs;
+
+  PageController? pageviewController;
 
   @override
   void onInit() async {
@@ -34,6 +40,14 @@ class Broswer extends GetxController {
     final newSpace = Space(name: name, children: []);
     await dao.insertNode(newSpace, index: spaces.length);
     spaces.add(newSpace);
+
+    currentSpaceIndex.value = spaces.length - 1;
+
+    pageviewController?.animateToPage(
+      currentSpaceIndex.value,
+      duration: const Duration(milliseconds: 500),
+      curve: Curves.ease,
+    );
   }
 
   Future<void> createFolderToCurrentSpace(String name) async {
@@ -58,5 +72,23 @@ class Broswer extends GetxController {
 
     currentSpace.insertChild(currentSpace.children.length, newTab);
     currentSpace.treeController?.rebuild();
+  }
+
+  Future<void> renameSpace(String name) async {
+    Space currentSpace = spaces[currentSpaceIndex.value];
+    currentSpace.name = name;
+    await dao.updateNode(currentSpace);
+  }
+
+  Future<void> deleteCurrentSpace() async {
+    Space space = spaces[currentSpaceIndex.value];
+    await dao.deleteNode(space.id);
+    spaces.remove(space);
+    currentSpaceIndex.value = max(0, currentSpaceIndex.value - 1);
+    pageviewController?.animateToPage(
+      currentSpaceIndex.value,
+      duration: const Duration(milliseconds: 500),
+      curve: Curves.ease,
+    );
   }
 }

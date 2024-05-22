@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:flutter_fancy_tree_view/flutter_fancy_tree_view.dart';
 import 'package:get/get.dart';
@@ -132,15 +133,90 @@ class SpaceTreeView extends StatelessWidget {
       builder: (controller) {
         return Column(
           children: [
-            Row(children: [
-              Text(
-                '  Space ${controller.broswer.spaces[spaceIndex].name}',
-                textAlign: TextAlign.left,
-                style: const TextStyle(
-                  fontWeight: FontWeight.bold,
+            GestureDetector(
+              onLongPress: () {
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      title: const Text('Manage Space'),
+                      content: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          ListTile(
+                            leading: const Icon(Icons.edit),
+                            title: const Text('Edit'),
+                            onTap: () {
+                              Navigator.pop(context);
+                              showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  String userInput = '';
+                                  return AlertDialog(
+                                    title: const Text('Edit Space Name'),
+                                    content: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: <Widget>[
+                                        TextField(
+                                          controller: TextEditingController()
+                                            ..text = controller.broswer
+                                                .spaces[spaceIndex].name,
+                                          onChanged: (value) =>
+                                              userInput = value,
+                                          decoration: const InputDecoration(
+                                            labelText: "Name",
+                                          ),
+                                        ),
+                                        // TextField(
+                                        //   onChanged: (value) => url = value,
+                                        //   decoration: const InputDecoration(
+                                        //     hintText: "URL",
+                                        //   ),
+                                        // ),
+                                      ],
+                                    ),
+                                    actions: <Widget>[
+                                      TextButton(
+                                        child: const Text('Save'),
+                                        onPressed: () {
+                                          Get.back(); // Close the dialog
+                                          if (userInput.isNotEmpty) {
+                                            controller.broswer
+                                                .renameSpace(userInput);
+                                            controller.update();
+                                          }
+                                        },
+                                      ),
+                                    ],
+                                  );
+                                },
+                              );
+                            },
+                          ),
+                          ListTile(
+                            leading: const Icon(Icons.delete),
+                            title: const Text('Delete Space'),
+                            onTap: () {
+                              Navigator.pop(context);
+                              controller.broswer.deleteCurrentSpace();
+                            },
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                );
+              },
+              child: Row(children: [
+                Text(
+                  '   ${controller.broswer.spaces[spaceIndex].name}',
+                  textAlign: TextAlign.left,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
-              ),
-            ]),
+              ]),
+            ),
             Expanded(
               child: AnimatedTreeView<SpaceItemTreeNode>(
                 padding: const EdgeInsets.all(0),

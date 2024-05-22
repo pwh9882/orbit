@@ -15,6 +15,7 @@ class MenuSpacePageView extends StatelessWidget {
       final pageviewController = PageController(
         initialPage: broswer.currentSpaceIndex.value,
       );
+      broswer.pageviewController = pageviewController;
       return Column(
         children: <Widget>[
           Expanded(
