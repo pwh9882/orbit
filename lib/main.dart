@@ -9,6 +9,9 @@ import 'package:orbit/views/sidebar_view/sidebar_view.dart';
 import 'package:orbit/views/split_view.dart';
 
 void main() async {
+  // it should be the first line in main method
+  WidgetsFlutterBinding.ensureInitialized();
+
   await GetStorage.init();
   await Get.putAsync(() async => SpaceItemDAO());
   await Get.putAsync(() async => Broswer());

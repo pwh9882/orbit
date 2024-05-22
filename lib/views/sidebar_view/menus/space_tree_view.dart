@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:flutter_fancy_tree_view/flutter_fancy_tree_view.dart';
 import 'package:get/get.dart';
@@ -391,6 +392,14 @@ class TreeTile extends StatelessWidget {
         );
         if (entry.node is Folder && onFolderPressed != null) {
           onFolderPressed!();
+        }
+        if (entry.node is TabNode) {
+          final broswer = Get.find<Broswer>();
+          final space = broswer.spaces[0] as Space;
+          space.currentSelectedTab = (entry.node as TabNode);
+          // broswer.webviewController!.webViewController!.loadUrl(
+          //     urlRequest:
+          //         URLRequest(url: WebUri(space.currentSelectedTab!.url)));
         }
       },
       onLongPress: () {

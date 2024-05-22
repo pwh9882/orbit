@@ -137,7 +137,38 @@ class MenuSpacePageIndicator extends StatelessWidget {
               PopupMenuItem<SampleItem>(
                 value: SampleItem.itemThree,
                 child: const Text('Create New Tab'),
-                onTap: () {},
+                onTap: () {
+                  showDialog(
+                    context: Get.context!,
+                    builder: (BuildContext context) {
+                      String userInput = '';
+                      return AlertDialog(
+                        title: const Text('Create New Tab'),
+                        content: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: <Widget>[
+                            TextField(
+                              onChanged: (value) => userInput = value,
+                              decoration: const InputDecoration(
+                                  hintText: "Search or Enter URL..."),
+                            ),
+                          ],
+                        ),
+                        actions: <Widget>[
+                          TextButton(
+                            child: const Text('Create'),
+                            onPressed: () {
+                              Get.back(); // Close the dialog
+                              if (userInput.isNotEmpty) {
+                                broswer.createTabToCurrentSpace(userInput);
+                              }
+                            },
+                          ),
+                        ],
+                      );
+                    },
+                  );
+                },
               ),
             ],
             offset: const Offset(-120, -165), // 팝업 메뉴의 위치를 위로 조정

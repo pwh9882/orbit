@@ -1,13 +1,13 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/page_view.dart';
 import 'package:get/get.dart';
 import 'package:orbit/models/folder.dart';
 import 'package:orbit/models/space.dart';
 import 'package:orbit/models/tab.dart';
 import 'package:orbit/models/url_parser.dart';
 import 'package:orbit/services/db/space_item_tree_node_dao.dart';
+import 'package:orbit/views/content_view/webivew.dart';
 
 class Broswer extends GetxController {
   final dao = Get.find<SpaceItemDAO>();
@@ -16,6 +16,8 @@ class Broswer extends GetxController {
   var currentSpaceIndex = 0.obs;
 
   PageController? pageviewController;
+
+  WebViewTabController? webviewController;
 
   @override
   void onInit() async {

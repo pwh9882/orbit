@@ -15,7 +15,6 @@ class MenuSearchBar extends StatelessWidget {
           context: Get.context!,
           builder: (BuildContext context) {
             String userInput = '';
-            String url = '';
             return AlertDialog(
               title: const Text('Create New Tab'),
               content: Column(
