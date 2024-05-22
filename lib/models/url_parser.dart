@@ -15,7 +15,7 @@ class UrlParser {
 
     // 스킴이 없는 경우 http 스킴을 추가
     if (uri != null && !uri.hasScheme) {
-      uri = Uri.parse('http://$input');
+      uri = Uri.parse('https://$input');
     }
 
     if (uri != null && uri.hasScheme && uri.hasAuthority) {

@@ -55,6 +55,17 @@ abstract class SpaceItemTreeNode {
     spaceItemDAO.syncChildNodeIndexes(node._parent!);
   }
 
+  Future<void> removeChild(SpaceItemTreeNode node) async {
+    final spaceItemDAO = Get.find<SpaceItemDAO>();
+
+    // Remove the node from the database
+    await spaceItemDAO.deleteNode(node.id);
+
+    // Remove the node from the parent's children list
+    _children.remove(node);
+    spaceItemDAO.syncChildNodeIndexes(this);
+  }
+
   dynamic get specificData; // 각 노드 타입에 특화된 데이터를 반환하는 추상 프로퍼티
 }
 

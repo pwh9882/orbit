@@ -90,6 +90,14 @@ class SpaceTreeController extends GetxController {
 
     treeController.rebuild();
   }
+
+  void onNodeDeletePressed(TreeEntry<SpaceItemTreeNode> entry) async {
+    final parent = entry.node.parent;
+    await parent?.removeChild(entry.node);
+    treeController.rebuild();
+  }
+
+  void onEditNode(TreeEntry<SpaceItemTreeNode> entry) {}
 }
 
 extension on TreeDragAndDropDetails<SpaceItemTreeNode> {
@@ -151,6 +159,9 @@ class SpaceTreeView extends StatelessWidget {
                               !(entry.node as Folder).isActivated,
                         }
                     },
+                    onNodeDeletePressed: () {
+                      controller.onNodeDeletePressed(entry);
+                    },
                   );
                 },
               ),
@@ -166,12 +177,14 @@ class DragAndDropTreeTile extends StatelessWidget {
   final TreeEntry<SpaceItemTreeNode> entry;
   final TreeDragTargetNodeAccepted<SpaceItemTreeNode> onNodeAccepted;
   final VoidCallback? onFolderPressed;
+  final VoidCallback onNodeDeletePressed;
 
   const DragAndDropTreeTile({
     super.key,
     required this.entry,
     required this.onNodeAccepted,
     this.onFolderPressed,
+    required this.onNodeDeletePressed,
   });
 
   @override
@@ -206,7 +219,10 @@ class DragAndDropTreeTile extends StatelessWidget {
           childWhenDragging: Opacity(
             opacity: .5,
             child: IgnorePointer(
-              child: TreeTile(entry: entry),
+              child: TreeTile(
+                entry: entry,
+                onNodeDeletePressed: onNodeDeletePressed,
+              ),
             ),
           ),
           feedback: IntrinsicWidth(
@@ -216,6 +232,7 @@ class DragAndDropTreeTile extends StatelessWidget {
                 entry: entry,
                 showIndentation: false,
                 onFolderPressed: () {},
+                onNodeDeletePressed: onNodeDeletePressed,
               ),
             ),
           ),
@@ -223,6 +240,7 @@ class DragAndDropTreeTile extends StatelessWidget {
             entry: entry,
             onFolderPressed:
                 entry.node.children.isEmpty ? null : onFolderPressed,
+            onNodeDeletePressed: onNodeDeletePressed,
             decoration: decoration,
           ),
         );
@@ -234,6 +252,7 @@ class DragAndDropTreeTile extends StatelessWidget {
 class TreeTile extends StatelessWidget {
   final TreeEntry<SpaceItemTreeNode> entry;
   final VoidCallback? onFolderPressed;
+  final VoidCallback onNodeDeletePressed;
   final Decoration? decoration;
   final bool showIndentation;
 
@@ -241,6 +260,7 @@ class TreeTile extends StatelessWidget {
     super.key,
     required this.entry,
     this.onFolderPressed,
+    required this.onNodeDeletePressed,
     this.decoration,
     this.showIndentation = true,
   });
@@ -267,7 +287,11 @@ class TreeTile extends StatelessWidget {
             overflow: TextOverflow.ellipsis,
           ),
         ),
-        Text(entry.node.nodeIndex.toString()),
+        if (entry.node is! Folder)
+          IconButton(
+            onPressed: onNodeDeletePressed,
+            icon: const Icon(Icons.clear),
+          )
       ],
     );
 
@@ -296,6 +320,7 @@ class TreeTile extends StatelessWidget {
                     title: const Text('Edit'),
                     onTap: () {
                       // TODO: Implement edit functionality
+
                       Navigator.pop(context);
                     },
                   ),
@@ -303,8 +328,8 @@ class TreeTile extends StatelessWidget {
                     leading: const Icon(Icons.delete),
                     title: const Text('Delete'),
                     onTap: () {
-                      // TODO: Implement delete functionality
                       Navigator.pop(context);
+                      onNodeDeletePressed();
                     },
                   ),
                 ],
