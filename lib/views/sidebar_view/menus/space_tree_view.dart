@@ -26,7 +26,23 @@ class SpaceTreeController extends GetxController {
       childrenProvider: (node) => node.children,
       parentProvider: (node) => node.parent,
     );
+
+    // Restore expansion state for folders
+    _restoreExpansionState(space.children);
+
     space.treeController = treeController;
+  }
+
+  void _restoreExpansionState(Iterable<SpaceItemTreeNode> nodes) {
+    for (var node in nodes) {
+      if (node is Folder && node.isActivated) {
+        treeController.setExpansionState(node, true);
+      }
+      if (node.children.isNotEmpty) {
+        _restoreExpansionState(node.children);
+      }
+    }
+    treeController.rebuild();
   }
 
   void populateExampleTree(SpaceItemTreeNode node, [int level = 0]) {
@@ -127,8 +143,14 @@ class SpaceTreeView extends StatelessWidget {
                     onNodeAccepted: (details) {
                       controller.onNodeAccepted(details);
                     },
-                    onFolderPressed: () =>
-                        controller.treeController.toggleExpansion(entry.node),
+                    onFolderPressed: () => {
+                      controller.treeController.toggleExpansion(entry.node),
+                      if (entry.node is Folder)
+                        {
+                          (entry.node as Folder).isActivated =
+                              !(entry.node as Folder).isActivated,
+                        }
+                    },
                   );
                 },
               ),
