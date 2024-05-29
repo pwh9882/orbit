@@ -17,4 +17,5 @@ class TabNode extends SpaceItemTreeNode {
   dynamic get specificData => url;
 
   bool isActivated = false; // DB에는 저장되지 않는다.
+  bool isSeleted = false; // DB에는 저장되지 않는다.
 }

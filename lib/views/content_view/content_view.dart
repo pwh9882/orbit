@@ -11,12 +11,9 @@ class ContentView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // return const EmptyPage();
+    final broswer = Get.find<Broswer>();
     return Obx(() {
-      final broswer = Get.find<Broswer>();
-      if (broswer.spaces.isEmpty ||
-          (broswer.spaces[broswer.currentSpaceIndex.value] as Space)
-                  .currentSelectedTab ==
-              null) {
+      if (broswer.webviewTabViewerController.currentTabIndex.value == -1) {
         return const EmptyPage();
       }
       return const WebviewTabViewer();

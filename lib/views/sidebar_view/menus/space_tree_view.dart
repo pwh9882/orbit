@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:flutter_fancy_tree_view/flutter_fancy_tree_view.dart';
 import 'package:get/get.dart';
@@ -15,7 +13,6 @@ class SpaceTreeController extends GetxController {
   late final Broswer broswer;
 
   final int spaceIndex;
-
   SpaceTreeController({required this.spaceIndex});
 
   @override
@@ -97,11 +94,23 @@ class SpaceTreeController extends GetxController {
   void onNodeDeletePressed(TreeEntry<SpaceItemTreeNode> entry) async {
     final parent = entry.node.parent;
     await parent?.removeChild(entry.node);
+    if (entry.node is TabNode) {
+      broswer.closeTab((entry.node as TabNode));
+    }
+    treeController.rebuild();
+  }
+
+  void onNodeClosePressed(TreeEntry<SpaceItemTreeNode> entry) {
     broswer.closeTab((entry.node as TabNode));
     treeController.rebuild();
   }
 
   void onEditNode(TreeEntry<SpaceItemTreeNode> entry) {}
+
+  void onNodeSelected(TreeEntry<SpaceItemTreeNode> entry) {
+    broswer.selectTab(entry.node as TabNode);
+    treeController.rebuild();
+  }
 }
 
 extension on TreeDragAndDropDetails<SpaceItemTreeNode> {
@@ -245,6 +254,12 @@ class SpaceTreeView extends StatelessWidget {
                       entry.node.updateNodeName(entry.node.name);
                       controller.treeController.rebuild();
                     },
+                    onNodeClosePressed: () {
+                      controller.onNodeClosePressed(entry);
+                    },
+                    onNodeSelected: () {
+                      controller.onNodeSelected(entry);
+                    },
                   );
                 },
               ),
@@ -262,6 +277,8 @@ class DragAndDropTreeTile extends StatelessWidget {
   final VoidCallback? onFolderPressed;
   final VoidCallback onNodeDeletePressed;
   final VoidCallback onNodeNameRenamed;
+  final VoidCallback? onNodeClosePressed;
+  final VoidCallback onNodeSelected;
 
   const DragAndDropTreeTile({
     super.key,
@@ -270,6 +287,8 @@ class DragAndDropTreeTile extends StatelessWidget {
     this.onFolderPressed,
     required this.onNodeDeletePressed,
     required this.onNodeNameRenamed,
+    required this.onNodeClosePressed,
+    required this.onNodeSelected,
   });
 
   @override
@@ -308,6 +327,8 @@ class DragAndDropTreeTile extends StatelessWidget {
                 entry: entry,
                 onNodeDeletePressed: onNodeDeletePressed,
                 onNodeNameRenamed: onNodeNameRenamed,
+                onNodeClosePressed: onNodeClosePressed,
+                onNodeSelected: onNodeSelected,
               ),
             ),
           ),
@@ -320,6 +341,8 @@ class DragAndDropTreeTile extends StatelessWidget {
                 onFolderPressed: () {},
                 onNodeDeletePressed: onNodeDeletePressed,
                 onNodeNameRenamed: onNodeNameRenamed,
+                onNodeClosePressed: onNodeClosePressed,
+                onNodeSelected: onNodeSelected,
               ),
             ),
           ),
@@ -329,6 +352,8 @@ class DragAndDropTreeTile extends StatelessWidget {
                 entry.node.children.isEmpty ? null : onFolderPressed,
             onNodeDeletePressed: onNodeDeletePressed,
             onNodeNameRenamed: onNodeNameRenamed,
+            onNodeClosePressed: onNodeClosePressed,
+            onNodeSelected: onNodeSelected,
             decoration: decoration,
           ),
         );
@@ -342,6 +367,8 @@ class TreeTile extends StatelessWidget {
   final VoidCallback? onFolderPressed;
   final VoidCallback onNodeDeletePressed;
   final VoidCallback onNodeNameRenamed;
+  final VoidCallback? onNodeClosePressed;
+  final VoidCallback onNodeSelected;
   final Decoration? decoration;
   final bool showIndentation;
 
@@ -351,6 +378,8 @@ class TreeTile extends StatelessWidget {
     this.onFolderPressed,
     required this.onNodeDeletePressed,
     required this.onNodeNameRenamed,
+    required this.onNodeClosePressed,
+    required this.onNodeSelected,
     this.decoration,
     this.showIndentation = true,
   });
@@ -377,15 +406,10 @@ class TreeTile extends StatelessWidget {
             overflow: TextOverflow.ellipsis,
           ),
         ),
-        if (entry.node is TabNode)
+        if (entry.node is TabNode && (entry.node as TabNode).isSeleted)
           if ((entry.node as TabNode).isActivated)
             IconButton(
-              onPressed: () {
-                final broswer = Get.find<Broswer>();
-                broswer.closeTab(entry.node as TabNode);
-
-                //TODO : 아마 버튼 바로 반영안될듯
-              },
+              onPressed: onNodeClosePressed,
               icon: const Icon(Icons.remove),
             )
           else
@@ -407,13 +431,7 @@ class TreeTile extends StatelessWidget {
           onFolderPressed!();
         }
         if (entry.node is TabNode) {
-          final broswer = Get.find<Broswer>();
-          // final space = broswer.spaces[0] as Space;
-          // space.currentSelectedTab = (entry.node as TabNode);
-          broswer.selectTab(entry.node as TabNode);
-          // broswer.webviewController!.webViewController!.loadUrl(
-          //     urlRequest:
-          //         URLRequest(url: WebUri(space.currentSelectedTab!.url)));
+          onNodeSelected();
         }
       },
       onLongPress: () {
@@ -497,7 +515,9 @@ class TreeTile extends StatelessWidget {
           // color: entry.isSelected
           //     ? Colors.blue.withOpacity(.2)
           //     : Colors.transparent,
-          color: context.theme.colorScheme.shadow.withOpacity(.2),
+          color: (entry.node is TabNode && (entry.node as TabNode).isSeleted)
+              ? Colors.blue.withOpacity(.2)
+              : context.theme.colorScheme.shadow.withOpacity(.2),
           borderRadius: BorderRadius.circular(12),
         ),
         child: content,

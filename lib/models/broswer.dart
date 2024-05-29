@@ -94,22 +94,30 @@ class Broswer extends GetxController {
   }
 
   Future<void> selectTab(TabNode tab) async {
+    debugPrint(tab.id);
     Space currentSpace = spaces[currentSpaceIndex.value];
 
+    currentSpace.currentSelectedTab?.isSeleted = false;
     currentSpace.currentSelectedTab = tab;
+
+    tab.isSeleted = true;
     if (tab.isActivated) {
+      debugPrint(tab.id);
+
       webviewTabViewerController.selectWebViewTabByTabId(tab.id);
     } else {
       tab.isActivated = true;
       webviewTabViewerController.addWebViewTab(tabId: tab.id, url: tab.url);
     }
-    update();
   }
 
   Future<void> closeTab(TabNode tab) async {
-    Space currentSpace = spaces[currentSpaceIndex.value];
+    debugPrint(tab.id);
+    // Space currentSpace = spaces[currentSpaceIndex.value];
     tab.isActivated = false;
-    currentSpace.currentSelectedTab = null;
+    // tab.isSeleted = false;
+
+    // currentSpace.currentSelectedTab = null;
 
     webviewTabViewerController.closeWebViewTabByTabId(tab.id);
   }
