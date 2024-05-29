@@ -13,6 +13,7 @@ import 'package:orbit/models/space_item_tree_node.dart';
 class SpaceTreeController extends GetxController {
   late final TreeController<SpaceItemTreeNode> treeController;
   late final Broswer broswer;
+
   final int spaceIndex;
 
   SpaceTreeController({required this.spaceIndex});
@@ -96,6 +97,7 @@ class SpaceTreeController extends GetxController {
   void onNodeDeletePressed(TreeEntry<SpaceItemTreeNode> entry) async {
     final parent = entry.node.parent;
     await parent?.removeChild(entry.node);
+    broswer.closeTab((entry.node as TabNode));
     treeController.rebuild();
   }
 
@@ -375,11 +377,22 @@ class TreeTile extends StatelessWidget {
             overflow: TextOverflow.ellipsis,
           ),
         ),
-        if (entry.node is! Folder)
-          IconButton(
-            onPressed: onNodeDeletePressed,
-            icon: const Icon(Icons.clear),
-          )
+        if (entry.node is TabNode)
+          if ((entry.node as TabNode).isActivated)
+            IconButton(
+              onPressed: () {
+                final broswer = Get.find<Broswer>();
+                broswer.closeTab(entry.node as TabNode);
+
+                //TODO : 아마 버튼 바로 반영안될듯
+              },
+              icon: const Icon(Icons.remove),
+            )
+          else
+            IconButton(
+              onPressed: onNodeDeletePressed,
+              icon: const Icon(Icons.clear),
+            )
       ],
     );
 
@@ -395,8 +408,9 @@ class TreeTile extends StatelessWidget {
         }
         if (entry.node is TabNode) {
           final broswer = Get.find<Broswer>();
-          final space = broswer.spaces[0] as Space;
-          space.currentSelectedTab = (entry.node as TabNode);
+          // final space = broswer.spaces[0] as Space;
+          // space.currentSelectedTab = (entry.node as TabNode);
+          broswer.selectTab(entry.node as TabNode);
           // broswer.webviewController!.webViewController!.loadUrl(
           //     urlRequest:
           //         URLRequest(url: WebUri(space.currentSelectedTab!.url)));

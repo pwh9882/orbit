@@ -80,7 +80,8 @@ class WebViewTabController extends GetxController {
   }
 }
 
-class WebViewTabScreen extends StatelessWidget {
+class WebViewTab extends StatelessWidget {
+  final String tabId;
   final String? url;
   final int? windowId;
   final WebViewTabController controller;
@@ -88,14 +89,16 @@ class WebViewTabScreen extends StatelessWidget {
   final Function(CreateWindowAction createWindowAction) onCreateTabRequested;
   final Function() onCloseTabRequested;
 
-  const WebViewTabScreen(
-      {super.key,
-      required this.url,
-      required this.controller,
-      // required this.onStateUpdated,
-      required this.onCloseTabRequested,
-      required this.onCreateTabRequested,
-      this.windowId});
+  const WebViewTab({
+    super.key,
+    required this.url,
+    required this.controller,
+    // required this.onStateUpdated,
+    required this.onCloseTabRequested,
+    required this.onCreateTabRequested,
+    this.windowId,
+    required this.tabId,
+  });
 
   @override
   Widget build(BuildContext context) {

@@ -6,8 +6,8 @@ import 'package:orbit/models/folder.dart';
 import 'package:orbit/models/space.dart';
 import 'package:orbit/models/tab.dart';
 import 'package:orbit/models/url_parser.dart';
+import 'package:orbit/models/webview_tab_viewer_contorller.dart';
 import 'package:orbit/services/db/space_item_tree_node_dao.dart';
-import 'package:orbit/views/content_view/webivew.dart';
 
 class Broswer extends GetxController {
   final dao = Get.find<SpaceItemDAO>();
@@ -17,7 +17,7 @@ class Broswer extends GetxController {
 
   PageController? pageviewController;
 
-  WebViewTabController? webviewController;
+  WebviewTabViewerController webviewTabViewerController = Get.find();
 
   @override
   void onInit() async {
@@ -52,30 +52,6 @@ class Broswer extends GetxController {
     );
   }
 
-  Future<void> createFolderToCurrentSpace(String name) async {
-    Space currentSpace = spaces[currentSpaceIndex.value];
-    final newFolder = Folder(name: name, children: []);
-    // await dao.insertNode(newFolder,
-    //     parentId: currentSpace.id, index: currentSpace.children.length);
-
-    currentSpace.insertChild(currentSpace.children.length, newFolder);
-    currentSpace.treeController?.rebuild();
-  }
-
-  Future<void> createTabToCurrentSpace(String userInput) async {
-    Space currentSpace = spaces[currentSpaceIndex.value];
-    // var urlPaswer = UrlParser();
-    var url = UrlParser().parse(userInput);
-
-    final newTab = TabNode(name: url, url: url);
-    // await dao.insertNode(newTab,
-    //     parentId: currentSpace.id, index: currentSpace.children.length);
-    // debugPrint(currentSpace.children.length.toString());
-
-    currentSpace.insertChild(currentSpace.children.length, newTab);
-    currentSpace.treeController?.rebuild();
-  }
-
   Future<void> renameSpace(String name) async {
     Space currentSpace = spaces[currentSpaceIndex.value];
     currentSpace.name = name;
@@ -93,4 +69,57 @@ class Broswer extends GetxController {
       curve: Curves.ease,
     );
   }
+
+  Future<void> createFolderToCurrentSpace(String name) async {
+    Space currentSpace = spaces[currentSpaceIndex.value];
+    final newFolder = Folder(name: name, children: []);
+    // await dao.insertNode(newFolder,
+    //     parentId: currentSpace.id, index: currentSpace.children.length);
+
+    currentSpace.insertChild(currentSpace.children.length, newFolder);
+    currentSpace.treeController?.rebuild();
+  }
+
+  Future<void> createTabToCurrentSpace(String userInput) async {
+    Space currentSpace = spaces[currentSpaceIndex.value];
+    var url = UrlParser().parse(userInput);
+
+    final newTab = TabNode(name: url, url: url);
+
+    currentSpace.insertChild(currentSpace.children.length, newTab);
+    currentSpace.treeController?.rebuild();
+
+    currentSpace.currentSelectedTab = newTab;
+    webviewTabViewerController.addWebViewTab(tabId: newTab.id, url: url);
+  }
+
+  Future<void> selectTab(TabNode tab) async {
+    Space currentSpace = spaces[currentSpaceIndex.value];
+
+    currentSpace.currentSelectedTab = tab;
+    if (tab.isActivated) {
+      webviewTabViewerController.selectWebViewTabByTabId(tab.id);
+    } else {
+      tab.isActivated = true;
+      webviewTabViewerController.addWebViewTab(tabId: tab.id, url: tab.url);
+    }
+    update();
+  }
+
+  Future<void> closeTab(TabNode tab) async {
+    Space currentSpace = spaces[currentSpaceIndex.value];
+    tab.isActivated = false;
+    currentSpace.currentSelectedTab = null;
+
+    webviewTabViewerController.closeWebViewTabByTabId(tab.id);
+  }
+
+  Future<void> renameTab(TabNode tab, String newName) async {
+    tab.name = newName;
+    await dao.updateNode(tab);
+  }
+
+  // Future<void> deleteTab(TabNode tab) async {
+  //   webviewTabViewerController.closeWebViewTabByTabId(tab.id);
+  // }
 }
