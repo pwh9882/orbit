@@ -422,11 +422,11 @@ class TreeTile extends StatelessWidget {
 
     content = GestureDetector(
       onTap: () {
-        Fluttertoast.showToast(
-          msg: "Node tapped: ${entry.node.name}",
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.BOTTOM,
-        );
+        // Fluttertoast.showToast(
+        //   msg: "Node tapped: ${entry.node.name}",
+        //   toastLength: Toast.LENGTH_SHORT,
+        //   gravity: ToastGravity.BOTTOM,
+        // );
         if (entry.node is Folder && onFolderPressed != null) {
           onFolderPressed!();
         }

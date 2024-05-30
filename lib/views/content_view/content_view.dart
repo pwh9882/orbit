@@ -12,11 +12,22 @@ class ContentView extends StatelessWidget {
   Widget build(BuildContext context) {
     // return const EmptyPage();
     final broswer = Get.find<Broswer>();
-    return Obx(() {
-      if (broswer.webviewTabViewerController.currentTabIndex.value == -1) {
-        return const EmptyPage();
-      }
-      return const WebviewTabViewer();
-    });
+    return Obx(
+      () => IndexedStack(
+        index: broswer.webviewTabViewerController.currentTabIndex.value == -1
+            ? 0
+            : 1,
+        children: const [
+          EmptyPage(),
+          WebviewTabViewer(),
+        ],
+      ),
+    );
+    // return Obx(() {
+    //   if (broswer.webviewTabViewerController.currentTabIndex.value == -1) {
+    //     return const EmptyPage();
+    //   }
+    //   return const WebviewTabViewer();
+    // });
   }
 }

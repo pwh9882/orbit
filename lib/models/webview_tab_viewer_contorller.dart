@@ -1,10 +1,11 @@
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:orbit/views/content_view/webivew_tab.dart';
 
 const kHomeUrl = 'https://google.com';
 
 class WebviewTabViewerController extends GetxController {
-  final webViewTabs = <WebViewTab>[].obs;
+  var webViewTabs = <WebViewTab>[];
   final currentTabIndex = (-1).obs;
 
   WebViewTab _createWebViewTab(
@@ -45,16 +46,26 @@ class WebviewTabViewerController extends GetxController {
 
   void selectWebViewTabByTabId(String tabId) {
     final webViewTab = webViewTabs.firstWhere((tab) => tab.tabId == tabId);
+    debugPrint('input tabId: $tabId');
+    debugPrint('selectWebViewTabByTabId: ${webViewTab.tabId}');
+
     _selectWebViewTab(webViewTab);
   }
 
-  void _selectWebViewTab(WebViewTab webViewTab) {
-    final webViewIndex = webViewTabs.indexOf(webViewTab);
+  void _selectWebViewTab(WebViewTab webViewTab) async {
+    // if (currentTabIndex.value == webViewIndex) {
+    //   webViewTab.controller.resume();
+    //   return;
+    // }
     if (currentTabIndex.value != -1) {
-      webViewTabs[currentTabIndex.value].controller.pause();
+      debugPrint('pause ${currentTabIndex.value}th tab');
+      await webViewTabs[currentTabIndex.value].controller.pause();
     }
+    final webViewIndex = webViewTabs.indexOf(webViewTab);
     currentTabIndex.value = webViewIndex;
-    webViewTab.controller.resume();
+    await webViewTabs[0].controller.resume();
+    debugPrint('resume ${webViewIndex}th tab');
+    // webViewTab.controller.resume();
     // setState(() {
     //   currentTabIndex = webViewIndex;
     //   showWebViewTabsViewer = false;
@@ -93,5 +104,16 @@ class WebviewTabViewerController extends GetxController {
     //     currentTabIndex = 0;
     //   });
     currentTabIndex.value = 0;
+  }
+
+  void debugPrintWebViewTabs() {
+    debugPrint('\n webviews info\n\n');
+    debugPrint(currentTabIndex.value.toString());
+    debugPrint(webViewTabs.length.toString());
+    // tabs
+    for (var i = 0; i < webViewTabs.length; i++) {
+      debugPrint('tab $i: ${webViewTabs[i].tabId}');
+    }
+    debugPrint('\n webviews info\n\n');
   }
 }

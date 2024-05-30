@@ -70,6 +70,29 @@ class Broswer extends GetxController {
     );
   }
 
+  Future<void> onFocusingSpaceChanged(int newIndex) async {
+    debugPrint('\n\nonFocusingSpaceChanged\n\n');
+    currentSpaceIndex.value = newIndex;
+
+    Space currentSpace = spaces[currentSpaceIndex.value];
+    if (currentSpace.currentSelectedTab != null) {
+      await selectTab(currentSpace.currentSelectedTab!);
+      // webviewTabViewerController
+      //     .webViewTabs[webviewTabViewerController.currentTabIndex.value]
+      //     .controller
+      //     .resume();
+      debugPrint('\nseletTab\n\n');
+    } else {
+      if (webviewTabViewerController.currentTabIndex.value != -1) {
+        // webviewTabViewerController
+        //     .webViewTabs[webviewTabViewerController.currentTabIndex.value]
+        //     .controller
+        //     .pause();
+      }
+      webviewTabViewerController.currentTabIndex.value = -1;
+    }
+  }
+
   Future<void> createFolderToCurrentSpace(String name) async {
     Space currentSpace = spaces[currentSpaceIndex.value];
     final newFolder = Folder(name: name, children: []);
@@ -89,22 +112,26 @@ class Broswer extends GetxController {
     currentSpace.insertChild(currentSpace.children.length, newTab);
     currentSpace.treeController?.rebuild();
 
-    currentSpace.currentSelectedTab = newTab;
-    webviewTabViewerController.addWebViewTab(tabId: newTab.id, url: url);
+    selectTab(newTab);
+    // currentSpace.currentSelectedTab = newTab;
+    // webviewTabViewerController.addWebViewTab(tabId: newTab.id, url: url);
   }
 
   Future<void> selectTab(TabNode tab) async {
-    debugPrint(tab.id);
     Space currentSpace = spaces[currentSpaceIndex.value];
 
     currentSpace.currentSelectedTab?.isSeleted = false;
+
     currentSpace.currentSelectedTab = tab;
-
     tab.isSeleted = true;
-    if (tab.isActivated) {
-      debugPrint(tab.id);
 
+    if (tab.isActivated) {
       webviewTabViewerController.selectWebViewTabByTabId(tab.id);
+
+      debugPrint('\n webviews info\n\n');
+      debugPrint(webviewTabViewerController.currentTabIndex.value.toString());
+      debugPrint(webviewTabViewerController.webViewTabs.length.toString());
+      debugPrint('\n webviews info\n\n');
     } else {
       tab.isActivated = true;
       webviewTabViewerController.addWebViewTab(tabId: tab.id, url: tab.url);
@@ -113,8 +140,9 @@ class Broswer extends GetxController {
 
   Future<void> closeTab(TabNode tab) async {
     debugPrint(tab.id);
-    // Space currentSpace = spaces[currentSpaceIndex.value];
+    Space currentSpace = spaces[currentSpaceIndex.value];
     tab.isActivated = false;
+    currentSpace.currentSelectedTab = null;
     // tab.isSeleted = false;
 
     // currentSpace.currentSelectedTab = null;

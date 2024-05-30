@@ -28,6 +28,7 @@ class WebViewTabController extends GetxController {
   }
 
   Future<void> pause() async {
+    // return;
     if (!kIsWeb) {
       if (defaultTargetPlatform == TargetPlatform.iOS) {
         await webViewController?.setAllMediaPlaybackSuspended(suspended: true);

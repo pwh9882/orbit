@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:orbit/models/webview_tab_viewer_contorller.dart';
 import 'package:orbit/views/sidebar_view/menus/theme_change_button.dart';
 
 class MenuShortcutBar extends StatelessWidget {
@@ -37,7 +38,13 @@ class MenuShortcutBar extends StatelessWidget {
           ThemeChangeButton(),
           IconButton(
             // settings
-            onPressed: () {},
+            onPressed: () {
+              var webviewTabViewerController =
+                  Get.find<WebviewTabViewerController>();
+              for (var tab in webviewTabViewerController.webViewTabs) {
+                tab.controller.pause();
+              }
+            },
             icon: Icon(
               Icons.settings,
               color: context.theme.colorScheme.onBackground,
@@ -45,7 +52,17 @@ class MenuShortcutBar extends StatelessWidget {
           ),
           IconButton(
             // back
-            onPressed: () {},
+            onPressed: () {
+              var webviewTabViewerController =
+                  Get.find<WebviewTabViewerController>();
+              webviewTabViewerController
+                  .webViewTabs[webviewTabViewerController.currentTabIndex.value]
+                  .controller
+                  .pause();
+
+              debugPrint(
+                  'pause ${webviewTabViewerController.currentTabIndex.value}th tab');
+            },
             icon: Icon(
               Icons.arrow_back_rounded,
               color: context.theme.colorScheme.onBackground,
@@ -53,7 +70,15 @@ class MenuShortcutBar extends StatelessWidget {
           ),
           IconButton(
             // forward
-            onPressed: () {},
+            onPressed: () {
+              var webviewTabViewerController =
+                  Get.find<WebviewTabViewerController>();
+              for (var tab in webviewTabViewerController.webViewTabs) {
+                tab.controller.resume();
+              }
+              debugPrint(
+                  'resume ${webviewTabViewerController.currentTabIndex.value}th tab');
+            },
             icon: Icon(
               Icons.arrow_forward_rounded,
               color: context.theme.colorScheme.onBackground,
@@ -61,7 +86,12 @@ class MenuShortcutBar extends StatelessWidget {
           ),
           IconButton(
             // refresh
-            onPressed: () {},
+            onPressed: () {
+              var webviewTabViewerController =
+                  Get.find<WebviewTabViewerController>();
+              // webviewTabViewerController.webViewTabs[0].controller.resume();
+              webviewTabViewerController.debugPrintWebViewTabs();
+            },
             icon: Icon(
               Icons.refresh_rounded,
               color: context.theme.colorScheme.onBackground,

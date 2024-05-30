@@ -22,7 +22,8 @@ class MenuSpacePageView extends StatelessWidget {
             child: PageView(
               controller: pageviewController,
               onPageChanged: (int index) {
-                broswer.currentSpaceIndex.value = index;
+                // broswer.currentSpaceIndex.value = index;
+                broswer.onFocusingSpaceChanged(index);
               },
               children: broswer.spaces
                   .asMap()
