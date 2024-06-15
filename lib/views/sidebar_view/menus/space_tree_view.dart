@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:flutter_fancy_tree_view/flutter_fancy_tree_view.dart';
 import 'package:get/get.dart';
 import 'package:orbit/models/broswer.dart';
@@ -515,7 +514,9 @@ class TreeTile extends StatelessWidget {
           // color: entry.isSelected
           //     ? Colors.blue.withOpacity(.2)
           //     : Colors.transparent,
-          color: (entry.node is TabNode && (entry.node as TabNode).isSeleted)
+          color: (entry.node is TabNode &&
+                  (entry.node as TabNode).isSeleted &&
+                  (entry.node as TabNode).isActivated)
               ? Colors.blue.withOpacity(.2)
               : context.theme.colorScheme.shadow.withOpacity(.2),
           borderRadius: BorderRadius.circular(12),

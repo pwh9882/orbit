@@ -26,8 +26,8 @@ class WebviewTabViewer extends StatelessWidget {
           if (didPop) {
             var currentTab = webivewTabViewerController
                 .webViewTabs[webivewTabViewerController.currentTabIndex.value];
-            if (await currentTab.controller.canGoBack()) {
-              currentTab.controller.goBack();
+            if (await currentTab.canGoBack()) {
+              currentTab.goBack();
             } else {
               broswer.closeTab(
                   (broswer.spaces[broswer.currentSpaceIndex.value] as Space)

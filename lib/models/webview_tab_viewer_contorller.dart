@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:orbit/views/content_view/webivew_tab.dart';
 
@@ -19,7 +20,6 @@ class WebviewTabViewerController extends GetxController {
     webViewTab = WebViewTab(
       tabId: tabId,
       url: url,
-      controller: WebViewTabController(),
       windowId: windowId,
       onCloseTabRequested: () {
         if (webViewTab != null) {
@@ -29,6 +29,8 @@ class WebviewTabViewerController extends GetxController {
       onCreateTabRequested: (createWindowAction) {
         // _addWebViewTab(windowId: createWindowAction.windowId);
       },
+      key: GlobalKey(),
+      onStateUpdated: () {},
     );
 
     return webViewTab;
@@ -58,18 +60,16 @@ class WebviewTabViewerController extends GetxController {
     //   return;
     // }
     if (currentTabIndex.value != -1) {
-      debugPrint('pause ${currentTabIndex.value}th tab');
-      await webViewTabs[currentTabIndex.value].controller.pause();
+      await webViewTabs[currentTabIndex.value].pause();
     }
     final webViewIndex = webViewTabs.indexOf(webViewTab);
     currentTabIndex.value = webViewIndex;
-    await webViewTabs[0].controller.resume();
-    debugPrint('resume ${webViewIndex}th tab');
-    // webViewTab.controller.resume();
-    // setState(() {
-    //   currentTabIndex = webViewIndex;
-    //   showWebViewTabsViewer = false;
-    // });
+    await webViewTabs[webViewIndex].resume();
+    Fluttertoast.showToast(
+      msg: 'Selected WebView Index: $webViewIndex',
+      toastLength: Toast.LENGTH_SHORT,
+      gravity: ToastGravity.BOTTOM,
+    );
   }
 
   void closeWebViewTabByTabId(String tabId) {
@@ -80,21 +80,8 @@ class WebviewTabViewerController extends GetxController {
   }
 
   void _closeWebViewTab(WebViewTab webViewTab) {
-    // final webViewIndex = webViewTabs.indexOf(webViewTab);
     webViewTabs.remove(webViewTab);
     currentTabIndex.value = -1;
-    // if (currentTabIndex > webViewIndex) {
-    //   currentTabIndex.value--;
-    // }
-    // // if (webViewTabs.isEmpty) {
-    // //   webViewTabs.add(createWebViewTab());
-    // //   currentTabIndex = 0;
-    // // }
-    // // setState(() {
-    // //   currentTabIndex = max(0, min(webViewTabs.length - 1, currentTabIndex));
-    // // });
-    // currentTabIndex.value =
-    //     currentTabIndex.value.clamp(0, webViewTabs.length - 1);
   }
 
   void _closeAllWebViewTabs() {
@@ -104,16 +91,5 @@ class WebviewTabViewerController extends GetxController {
     //     currentTabIndex = 0;
     //   });
     currentTabIndex.value = 0;
-  }
-
-  void debugPrintWebViewTabs() {
-    debugPrint('\n webviews info\n\n');
-    debugPrint(currentTabIndex.value.toString());
-    debugPrint(webViewTabs.length.toString());
-    // tabs
-    for (var i = 0; i < webViewTabs.length; i++) {
-      debugPrint('tab $i: ${webViewTabs[i].tabId}');
-    }
-    debugPrint('\n webviews info\n\n');
   }
 }

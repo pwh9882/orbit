@@ -42,7 +42,7 @@ class MenuShortcutBar extends StatelessWidget {
               var webviewTabViewerController =
                   Get.find<WebviewTabViewerController>();
               for (var tab in webviewTabViewerController.webViewTabs) {
-                tab.controller.pause();
+                tab.pause();
               }
             },
             icon: Icon(
@@ -55,13 +55,17 @@ class MenuShortcutBar extends StatelessWidget {
             onPressed: () {
               var webviewTabViewerController =
                   Get.find<WebviewTabViewerController>();
-              webviewTabViewerController
-                  .webViewTabs[webviewTabViewerController.currentTabIndex.value]
-                  .controller
-                  .pause();
+              // webviewTabViewerController
+              //     .webViewTabs[webviewTabViewerController.currentTabIndex.value]
+              //     .controller
+              //     .pause();
 
-              debugPrint(
-                  'pause ${webviewTabViewerController.currentTabIndex.value}th tab');
+              // debugPrint(
+              //     'pause ${webviewTabViewerController.currentTabIndex.value}th tab');
+
+              var currentWebViewTab = webviewTabViewerController.webViewTabs[
+                  webviewTabViewerController.currentTabIndex.value];
+              currentWebViewTab.goBack();
             },
             icon: Icon(
               Icons.arrow_back_rounded,
@@ -73,11 +77,14 @@ class MenuShortcutBar extends StatelessWidget {
             onPressed: () {
               var webviewTabViewerController =
                   Get.find<WebviewTabViewerController>();
-              for (var tab in webviewTabViewerController.webViewTabs) {
-                tab.controller.resume();
-              }
-              debugPrint(
-                  'resume ${webviewTabViewerController.currentTabIndex.value}th tab');
+              // for (var tab in webviewTabViewerController.webViewTabs) {
+              //   tab.controller.resume();
+              // }
+              // debugPrint(
+              //     'resume ${webviewTabViewerController.currentTabIndex.value}th tab');
+              var currentWebViewTab = webviewTabViewerController.webViewTabs[
+                  webviewTabViewerController.currentTabIndex.value];
+              currentWebViewTab.goForward();
             },
             icon: Icon(
               Icons.arrow_forward_rounded,
@@ -89,8 +96,10 @@ class MenuShortcutBar extends StatelessWidget {
             onPressed: () {
               var webviewTabViewerController =
                   Get.find<WebviewTabViewerController>();
-              // webviewTabViewerController.webViewTabs[0].controller.resume();
-              webviewTabViewerController.debugPrintWebViewTabs();
+
+              var currentWebViewTab = webviewTabViewerController.webViewTabs[
+                  webviewTabViewerController.currentTabIndex.value];
+              currentWebViewTab.reload();
             },
             icon: Icon(
               Icons.refresh_rounded,

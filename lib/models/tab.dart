@@ -3,14 +3,16 @@ import 'space_item_tree_node.dart';
 
 class TabNode extends SpaceItemTreeNode {
   final String url;
+  final String originUrl;
+  String? customTitle;
 
   TabNode({
     required super.name,
     required this.url,
-  }) : super(
+  })  : originUrl = url,
+        super(
           id: const Uuid().v4(),
           type: SpaceItemTreeNodeType.tab,
-          children: [],
         );
 
   @override
