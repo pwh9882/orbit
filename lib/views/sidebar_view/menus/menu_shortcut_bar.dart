@@ -10,6 +10,8 @@ class MenuShortcutBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var webviewTabViewerController = Get.find<WebviewTabViewerController>();
+
     return Container(
       color: context.theme.colorScheme.onSecondary,
       child: Row(
@@ -38,13 +40,7 @@ class MenuShortcutBar extends StatelessWidget {
           ThemeChangeButton(),
           IconButton(
             // settings
-            onPressed: () {
-              var webviewTabViewerController =
-                  Get.find<WebviewTabViewerController>();
-              for (var tab in webviewTabViewerController.webViewTabs) {
-                tab.pause();
-              }
-            },
+            onPressed: () {},
             icon: Icon(
               Icons.settings,
               color: context.theme.colorScheme.onBackground,
@@ -53,16 +49,6 @@ class MenuShortcutBar extends StatelessWidget {
           IconButton(
             // back
             onPressed: () {
-              var webviewTabViewerController =
-                  Get.find<WebviewTabViewerController>();
-              // webviewTabViewerController
-              //     .webViewTabs[webviewTabViewerController.currentTabIndex.value]
-              //     .controller
-              //     .pause();
-
-              // debugPrint(
-              //     'pause ${webviewTabViewerController.currentTabIndex.value}th tab');
-
               var currentWebViewTab = webviewTabViewerController.webViewTabs[
                   webviewTabViewerController.currentTabIndex.value];
               currentWebViewTab.goBack();
@@ -75,13 +61,6 @@ class MenuShortcutBar extends StatelessWidget {
           IconButton(
             // forward
             onPressed: () {
-              var webviewTabViewerController =
-                  Get.find<WebviewTabViewerController>();
-              // for (var tab in webviewTabViewerController.webViewTabs) {
-              //   tab.controller.resume();
-              // }
-              // debugPrint(
-              //     'resume ${webviewTabViewerController.currentTabIndex.value}th tab');
               var currentWebViewTab = webviewTabViewerController.webViewTabs[
                   webviewTabViewerController.currentTabIndex.value];
               currentWebViewTab.goForward();
@@ -94,9 +73,6 @@ class MenuShortcutBar extends StatelessWidget {
           IconButton(
             // refresh
             onPressed: () {
-              var webviewTabViewerController =
-                  Get.find<WebviewTabViewerController>();
-
               var currentWebViewTab = webviewTabViewerController.webViewTabs[
                   webviewTabViewerController.currentTabIndex.value];
               currentWebViewTab.reload();

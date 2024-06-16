@@ -22,11 +22,5 @@ class ContentView extends StatelessWidget {
         ],
       ),
     );
-    // return Obx(() {
-    //   if (broswer.webviewTabViewerController.currentTabIndex.value == -1) {
-    //     return const EmptyPage();
-    //   }
-    //   return const WebviewTabViewer();
-    // });
   }
 }

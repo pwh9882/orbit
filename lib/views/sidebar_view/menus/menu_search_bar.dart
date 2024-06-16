@@ -70,10 +70,12 @@ class MenuSearchBar extends StatelessWidget {
             color: context.theme.colorScheme.shadow.withOpacity(0.01),
             child: Row(
               children: [
-                IconButton(
-                  icon: const Icon(Icons.search),
-                  onPressed: () {},
-                ),
+                if (browser.webviewTabViewerController.currentTabIndex.value ==
+                    -1)
+                  IconButton(
+                    icon: const Icon(Icons.search),
+                    onPressed: () {},
+                  ),
                 Expanded(
                   child: Padding(
                     padding: const EdgeInsets.only(left: 0.0),
@@ -95,10 +97,12 @@ class MenuSearchBar extends StatelessWidget {
                     ),
                   ),
                 ),
-                IconButton(
-                  icon: const Icon(Icons.display_settings_outlined),
-                  onPressed: () {},
-                ),
+                if (browser.webviewTabViewerController.currentTabIndex.value !=
+                    -1)
+                  IconButton(
+                    icon: const Icon(Icons.display_settings_outlined),
+                    onPressed: () {},
+                  ),
               ],
             ),
           ),
