@@ -93,6 +93,12 @@ class WebViewTab extends StatefulWidget {
     final state = (key as GlobalKey).currentState as _WebViewTabState?;
     await state?.goForward();
   }
+
+  Future<void> loadUrl(String url) async {
+    final state = (key as GlobalKey).currentState as _WebViewTabState?;
+    await state?._webViewController
+        ?.loadUrl(urlRequest: URLRequest(url: WebUri(url)));
+  }
 }
 
 class _WebViewTabState extends State<WebViewTab> with WidgetsBindingObserver {

@@ -38,7 +38,13 @@ class MenuSearchBar extends StatelessWidget {
                         onPressed: () {
                           Get.back(); // Close the dialog
                           if (userInput.isNotEmpty) {
-                            browser.createTabToCurrentSpace(userInput);
+                            if (browser.webviewTabViewerController
+                                    .currentTabIndex.value ==
+                                -1) {
+                              browser.createTabToCurrentSpace(userInput);
+                            } else {
+                              browser.loadUrlToCurrentTab(userInput);
+                            }
                           }
                         },
                       ),

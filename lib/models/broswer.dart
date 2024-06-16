@@ -165,4 +165,14 @@ class Broswer extends GetxController {
     }
     return false;
   }
+
+  Future<void> loadUrlToCurrentTab(String url) async {
+    Space currentSpace = spaces[currentSpaceIndex.value];
+    if (currentSpace.currentSelectedTab != null) {
+      // currentSpace.currentSelectedTab!.url = url;
+
+      var parsedUrl = UrlParser().parse(url);
+      webviewTabViewerController.loadUrlToTab(parsedUrl);
+    }
+  }
 }

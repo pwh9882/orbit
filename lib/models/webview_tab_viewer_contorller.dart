@@ -86,6 +86,9 @@ class WebviewTabViewerController extends GetxController {
   }
 
   void _closeWebViewTab(WebViewTab webViewTab) {
+    currentTabUrl.value = '';
+    currentTabUrlHost.value = '';
+
     webViewTabs.remove(webViewTab);
     currentTabIndex.value = -1;
   }
@@ -97,5 +100,10 @@ class WebviewTabViewerController extends GetxController {
     //     currentTabIndex = 0;
     //   });
     currentTabIndex.value = 0;
+  }
+
+  void loadUrlToTab(String url) {
+    final webViewTab = webViewTabs[currentTabIndex.value];
+    webViewTab.loadUrl(url);
   }
 }
