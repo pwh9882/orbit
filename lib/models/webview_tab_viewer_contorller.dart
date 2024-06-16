@@ -9,6 +9,9 @@ class WebviewTabViewerController extends GetxController {
   var webViewTabs = <WebViewTab>[];
   final currentTabIndex = (-1).obs;
 
+  var currentTabUrl = ''.obs;
+  var currentTabUrlHost = ''.obs;
+
   WebViewTab _createWebViewTab(
       {required String tabId, String? url, int? windowId}) {
     WebViewTab? webViewTab;
@@ -37,13 +40,14 @@ class WebviewTabViewerController extends GetxController {
   }
 
   void addWebViewTab({required String tabId, String? url, int? windowId}) {
-    webViewTabs
-        .add(_createWebViewTab(tabId: tabId, url: url, windowId: windowId));
+    var newTab = _createWebViewTab(tabId: tabId, url: url, windowId: windowId);
+    webViewTabs.add(newTab);
 
     // setState(() {
     //   currentTabIndex = webViewTabs.length - 1;
     // });
-    currentTabIndex.value = webViewTabs.length - 1;
+    // currentTabIndex.value = webViewTabs.length - 1;
+    _selectWebViewTab(newTab);
   }
 
   void selectWebViewTabByTabId(String tabId) {
@@ -70,6 +74,8 @@ class WebviewTabViewerController extends GetxController {
       toastLength: Toast.LENGTH_SHORT,
       gravity: ToastGravity.BOTTOM,
     );
+    currentTabUrl.value = webViewTabs[webViewIndex].currentUrl ?? '';
+    currentTabUrlHost.value = Uri.parse(currentTabUrl.value).host;
   }
 
   void closeWebViewTabByTabId(String tabId) {

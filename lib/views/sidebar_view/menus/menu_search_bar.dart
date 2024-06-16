@@ -8,81 +8,93 @@ class MenuSearchBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var browser = Get.find<Broswer>();
-    return GestureDetector(
-      onTap: () {
-        // Add your code here for when the box is clicked
-        showDialog(
-          context: Get.context!,
-          builder: (BuildContext context) {
-            String userInput = '';
-            return AlertDialog(
-              content: SizedBox(
-                width: 600,
-                child: Row(
-                  children: <Widget>[
-                    Expanded(
-                      child: TextField(
-                        onChanged: (value) => userInput = value,
-                        decoration: const InputDecoration(
-                          hintText: "Search or Enter URL...",
+
+    return Obx(
+      () => GestureDetector(
+        onTap: () {
+          // Add your code here for when the box is clicked
+          showDialog(
+            context: Get.context!,
+            builder: (BuildContext context) {
+              String userInput = '';
+              return AlertDialog(
+                content: SizedBox(
+                  width: 600,
+                  child: Row(
+                    children: <Widget>[
+                      Expanded(
+                        child: TextField(
+                          controller: TextEditingController(
+                              text: browser.webviewTabViewerController
+                                  .currentTabUrl.value),
+                          onChanged: (value) => userInput = value,
+                          decoration: const InputDecoration(
+                            hintText: "Search or Enter URL...",
+                          ),
                         ),
                       ),
-                    ),
-                    IconButton(
-                      icon: const Icon(Icons.arrow_forward_rounded),
-                      onPressed: () {
-                        Get.back(); // Close the dialog
-                        if (userInput.isNotEmpty) {
-                          browser.createTabToCurrentSpace(userInput);
-                        }
-                      },
-                    ),
-                  ],
+                      IconButton(
+                        icon: const Icon(Icons.arrow_forward_rounded),
+                        onPressed: () {
+                          Get.back(); // Close the dialog
+                          if (userInput.isNotEmpty) {
+                            browser.createTabToCurrentSpace(userInput);
+                          }
+                        },
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-              shape: const RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(12)),
-              ),
-              contentPadding: const EdgeInsets.only(
-                left: 20,
-                right: 0,
-                top: 10,
-                bottom: 10,
-              ),
-            );
-          },
-        );
-      },
-      child: SizedBox(
-        height: 50,
-        child: Card(
-          color: context.theme.colorScheme.shadow.withOpacity(0.01),
-          child: Row(
-            children: [
-              IconButton(
-                icon: const Icon(Icons.search),
-                onPressed: () {},
-              ),
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.only(left: 0.0),
-                  child: SizedBox(
-                    child: Text(
-                      'Search or enter url...',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: context.theme.colorScheme.onSurface
-                            .withOpacity(0.7),
+                shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(12)),
+                ),
+                contentPadding: const EdgeInsets.only(
+                  left: 20,
+                  right: 0,
+                  top: 10,
+                  bottom: 10,
+                ),
+              );
+            },
+          );
+        },
+        child: SizedBox(
+          height: 50,
+          child: Card(
+            color: context.theme.colorScheme.shadow.withOpacity(0.01),
+            child: Row(
+              children: [
+                IconButton(
+                  icon: const Icon(Icons.search),
+                  onPressed: () {},
+                ),
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 0.0),
+                    child: SizedBox(
+                      child: Text(
+                        browser.webviewTabViewerController.currentTabUrlHost
+                                    .value ==
+                                ''
+                            ? 'Search or Enter URL...'
+                            : browser.webviewTabViewerController
+                                .currentTabUrlHost.value,
+                        // 'Search or enter url...',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: context.theme.colorScheme.onSurface
+                              .withOpacity(0.7),
+                        ),
                       ),
                     ),
                   ),
                 ),
-              ),
-              IconButton(
-                icon: const Icon(Icons.display_settings_outlined),
-                onPressed: () {},
-              ),
-            ],
+                IconButton(
+                  icon: const Icon(Icons.display_settings_outlined),
+                  onPressed: () {},
+                ),
+              ],
+            ),
           ),
         ),
       ),

@@ -86,6 +86,8 @@ class Broswer extends GetxController {
       selectTab(currentSpace.currentSelectedTab!);
     } else {
       webviewTabViewerController.currentTabIndex.value = -1;
+      webviewTabViewerController.currentTabUrl.value = '';
+      webviewTabViewerController.currentTabUrlHost.value = '';
     }
   }
 

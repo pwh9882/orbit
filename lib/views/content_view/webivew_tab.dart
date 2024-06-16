@@ -1,6 +1,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
+import 'package:get/get.dart';
+import 'package:orbit/models/broswer.dart';
 
 class WebViewTab extends StatefulWidget {
   final String tabId;
@@ -12,7 +14,10 @@ class WebViewTab extends StatefulWidget {
 
   String? get currentUrl {
     final state = (key as GlobalKey).currentState as _WebViewTabState?;
-    return state?._url;
+    if (state != null) {
+      return Uri.decodeComponent(state._url);
+    }
+    return null;
   }
 
   bool? get isSecure {
@@ -49,10 +54,10 @@ class WebViewTab extends StatefulWidget {
   @override
   State<WebViewTab> createState() => _WebViewTabState();
 
-  Future<void> updateScreenshot() async {
-    final state = (key as GlobalKey).currentState as _WebViewTabState?;
-    await state?.updateScreenshot();
-  }
+  // Future<void> updateScreenshot() async {
+  //   final state = (key as GlobalKey).currentState as _WebViewTabState?;
+  //   await state?.updateScreenshot();
+  // }
 
   Future<void> pause() async {
     final state = (key as GlobalKey).currentState as _WebViewTabState?;
@@ -150,6 +155,7 @@ class _WebViewTabState extends State<WebViewTab> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
+    final broswer = Get.find<Broswer>();
     final url = widget.url;
 
     return Column(children: <Widget>[
@@ -188,13 +194,20 @@ class _WebViewTabState extends State<WebViewTab> with WidgetsBindingObserver {
                 if (url != null) {
                   _url = url.toString();
                   _isSecure = urlIsSecure(url);
+
+                  broswer.webviewTabViewerController.currentTabUrl.value =
+                      Uri.decodeComponent(_url);
+
+                  broswer.webviewTabViewerController.currentTabUrlHost.value =
+                      Uri.parse(_url).host;
                 }
+
                 widget.onStateUpdated.call();
               },
               onLoadStop: (controller, url) async {
                 pullToRefreshController?.endRefreshing();
 
-                updateScreenshot();
+                // updateScreenshot();
 
                 if (url != null) {
                   final sslCertificate = await controller.getCertificate();
@@ -253,16 +266,16 @@ class _WebViewTabState extends State<WebViewTab> with WidgetsBindingObserver {
     ]);
   }
 
-  Future<void> updateScreenshot() async {
-    _screenshot = await _webViewController
-        ?.takeScreenshot(
-            screenshotConfiguration: ScreenshotConfiguration(
-                compressFormat: CompressFormat.JPEG, quality: 20))
-        .timeout(
-          const Duration(milliseconds: 1500),
-          onTimeout: () => null,
-        );
-  }
+  // Future<void> updateScreenshot() async {
+  //   _screenshot = await _webViewController
+  //       ?.takeScreenshot(
+  //           screenshotConfiguration: ScreenshotConfiguration(
+  //               compressFormat: CompressFormat.JPEG, quality: 20))
+  //       .timeout(
+  //         const Duration(milliseconds: 1500),
+  //         onTimeout: () => null,
+  //       );
+  // }
 
   Future<void> pause() async {
     if (!kIsWeb) {
