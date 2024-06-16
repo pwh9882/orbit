@@ -140,8 +140,14 @@ class Broswer extends GetxController {
     treeController?.rebuild();
   }
 
+  Future<void> renameCurrentTab(String newName) async {
+    Space currentSpace = spaces[currentSpaceIndex.value];
+    renameTab(currentSpace.currentSelectedTab!, newName);
+  }
+
   Future<void> renameTab(TabNode tab, String newName) async {
-    tab.name = newName;
+    tab.customTitle = newName;
+    treeController?.rebuild();
     await dao.updateNode(tab);
   }
 

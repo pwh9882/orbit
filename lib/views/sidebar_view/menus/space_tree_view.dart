@@ -402,12 +402,20 @@ class TreeTile extends StatelessWidget {
             onPressed: () => {},
             icon: const Icon(Icons.insert_drive_file),
           ),
-        Expanded(
-          child: Text(
-            entry.node.name,
-            overflow: TextOverflow.ellipsis,
+        if (entry.node is TabNode)
+          Expanded(
+            child: Text(
+              (entry.node as TabNode).customTitle ?? entry.node.name,
+              overflow: TextOverflow.ellipsis,
+            ),
+          )
+        else
+          Expanded(
+            child: Text(
+              entry.node.name,
+              overflow: TextOverflow.ellipsis,
+            ),
           ),
-        ),
         if (entry.node is TabNode && (entry.node as TabNode).isSeleted)
           if ((entry.node as TabNode).isActivated)
             IconButton(
