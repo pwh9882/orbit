@@ -99,12 +99,33 @@ class _WebViewTabState extends State<WebViewTab> with WidgetsBindingObserver {
   Favicon? _favicon;
   double _progress = 0;
 
+  PullToRefreshController? pullToRefreshController;
+  PullToRefreshSettings pullToRefreshSettings = PullToRefreshSettings(
+    color: Colors.blue,
+  );
+  bool pullToRefreshEnabled = true;
+
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
 
     _url = widget.url ?? '';
+
+    pullToRefreshController = kIsWeb
+        ? null
+        : PullToRefreshController(
+            settings: pullToRefreshSettings,
+            onRefresh: () async {
+              if (defaultTargetPlatform == TargetPlatform.android) {
+                _webViewController?.reload();
+              } else if (defaultTargetPlatform == TargetPlatform.iOS) {
+                _webViewController?.loadUrl(
+                    urlRequest:
+                        URLRequest(url: await _webViewController?.getUrl()));
+              }
+            },
+          );
   }
 
   @override
@@ -150,12 +171,16 @@ class _WebViewTabState extends State<WebViewTab> with WidgetsBindingObserver {
                 mediaPlaybackRequiresUserGesture: false,
                 allowsInlineMediaPlayback: true,
               ),
+              pullToRefreshController: pullToRefreshController,
               onWebViewCreated: (controller) async {
                 _webViewController = controller;
                 if (!kIsWeb &&
                     defaultTargetPlatform == TargetPlatform.android) {
                   await controller.startSafeBrowsing();
                 }
+              },
+              onReceivedError: (controller, request, error) {
+                pullToRefreshController?.endRefreshing();
               },
               onLoadStart: (controller, url) {
                 _favicon = null;
@@ -167,6 +192,8 @@ class _WebViewTabState extends State<WebViewTab> with WidgetsBindingObserver {
                 widget.onStateUpdated.call();
               },
               onLoadStop: (controller, url) async {
+                pullToRefreshController?.endRefreshing();
+
                 updateScreenshot();
 
                 if (url != null) {
@@ -200,6 +227,9 @@ class _WebViewTabState extends State<WebViewTab> with WidgetsBindingObserver {
                 widget.onStateUpdated.call();
               },
               onProgressChanged: (controller, progress) {
+                if (progress == 100) {
+                  pullToRefreshController?.endRefreshing();
+                }
                 setState(() {
                   _progress = progress / 100;
                 });

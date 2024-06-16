@@ -9,10 +9,11 @@ class SidebarView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       // appBar: AppBar(title: const Text('Menu')),
       backgroundColor: Theme.of(context).colorScheme.secondaryContainer,
       body: Padding(
-        padding: const EdgeInsets.only(top: 25.0),
+        padding: const EdgeInsets.only(top: 5),
         child: Column(
           children: [
             const MenuSearchBar(),

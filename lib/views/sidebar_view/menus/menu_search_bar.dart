@@ -7,7 +7,7 @@ class MenuSearchBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var broswer = Get.find<Broswer>();
+    var browser = Get.find<Broswer>();
     return GestureDetector(
       onTap: () {
         // Add your code here for when the box is clicked
@@ -16,28 +16,39 @@ class MenuSearchBar extends StatelessWidget {
           builder: (BuildContext context) {
             String userInput = '';
             return AlertDialog(
-              title: const Text('Create New Tab'),
-              content: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  TextField(
-                    onChanged: (value) => userInput = value,
-                    decoration: const InputDecoration(
-                        hintText: "Search or Enter URL..."),
-                  ),
-                ],
-              ),
-              actions: <Widget>[
-                TextButton(
-                  child: const Text('Create'),
-                  onPressed: () {
-                    Get.back(); // Close the dialog
-                    if (userInput.isNotEmpty) {
-                      broswer.createTabToCurrentSpace(userInput);
-                    }
-                  },
+              content: SizedBox(
+                width: 600,
+                child: Row(
+                  children: <Widget>[
+                    Expanded(
+                      child: TextField(
+                        onChanged: (value) => userInput = value,
+                        decoration: const InputDecoration(
+                          hintText: "Search or Enter URL...",
+                        ),
+                      ),
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.arrow_forward_rounded),
+                      onPressed: () {
+                        Get.back(); // Close the dialog
+                        if (userInput.isNotEmpty) {
+                          browser.createTabToCurrentSpace(userInput);
+                        }
+                      },
+                    ),
+                  ],
                 ),
-              ],
+              ),
+              shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(12)),
+              ),
+              contentPadding: const EdgeInsets.only(
+                left: 20,
+                right: 0,
+                top: 10,
+                bottom: 10,
+              ),
             );
           },
         );

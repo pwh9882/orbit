@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:orbit/controllers/theme_controller.dart';
@@ -27,14 +28,24 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+      statusBarColor: Colors.transparent, // 투명색
+    ));
+    SystemChrome.setEnabledSystemUIMode(
+      SystemUiMode.manual,
+      overlays: [SystemUiOverlay.top, SystemUiOverlay.bottom],
+    );
     return GetMaterialApp(
       title: 'Orbit',
       theme: themeController.materialTheme.light(),
       darkTheme: themeController.materialTheme.dark(),
       themeMode: themeController.theme,
-      home: const SplitView(
-        menu: SidebarView(),
-        content: ContentView(),
+      home: const SafeArea(
+        minimum: EdgeInsets.only(top: 24),
+        child: SplitView(
+          menu: SidebarView(),
+          content: ContentView(),
+        ),
       ),
     );
   }

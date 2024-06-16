@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:orbit/models/broswer.dart';
-import 'package:orbit/models/space.dart';
 import 'package:orbit/views/sidebar_view/custom_sidebar_drawer.dart';
 
 class SplitView extends StatelessWidget {
