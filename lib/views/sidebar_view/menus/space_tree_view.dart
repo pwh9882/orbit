@@ -18,6 +18,7 @@ class SpaceTreeController extends GetxController {
   void onInit() {
     super.onInit();
     broswer = Get.find<Broswer>();
+
     var space = broswer.spaces[spaceIndex] as Space;
 
     treeController = TreeController<SpaceItemTreeNode>(
@@ -25,6 +26,7 @@ class SpaceTreeController extends GetxController {
       childrenProvider: (node) => node.children,
       parentProvider: (node) => node.parent,
     );
+    broswer.treeController = treeController;
 
     // Restore expansion state for folders
     _restoreExpansionState(space.children);
@@ -95,13 +97,14 @@ class SpaceTreeController extends GetxController {
     await parent?.removeChild(entry.node);
     if (entry.node is TabNode) {
       broswer.closeTab((entry.node as TabNode));
+    } else {
+      treeController.rebuild();
     }
-    treeController.rebuild();
   }
 
   void onNodeClosePressed(TreeEntry<SpaceItemTreeNode> entry) {
     broswer.closeTab((entry.node as TabNode));
-    treeController.rebuild();
+    // treeController.rebuild();
   }
 
   void onEditNode(TreeEntry<SpaceItemTreeNode> entry) {}

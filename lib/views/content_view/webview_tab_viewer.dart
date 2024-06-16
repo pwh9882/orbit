@@ -13,32 +13,40 @@ class WebviewTabViewer extends StatelessWidget {
     final broswer = Get.find<Broswer>();
 
     return Obx(
-      () => PopScope(
-        child: Scaffold(
-          body: IndexedStack(
-            index: webivewTabViewerController.currentTabIndex.value,
-            children: webivewTabViewerController.webViewTabs
-                .map((webViewTab) => webViewTab)
-                .toList(),
-          ),
+      () => Scaffold(
+        body: IndexedStack(
+          index: webivewTabViewerController.currentTabIndex.value,
+          children: webivewTabViewerController.webViewTabs
+              .map((webViewTab) => webViewTab)
+              .toList(),
         ),
-        onPopInvoked: (didPop) async {
-          if (didPop) {
-            var currentTab = webivewTabViewerController
-                .webViewTabs[webivewTabViewerController.currentTabIndex.value];
-            if (await currentTab.canGoBack()) {
-              currentTab.goBack();
-            } else {
-              broswer.closeTab(
-                  (broswer.spaces[broswer.currentSpaceIndex.value] as Space)
-                      .currentSelectedTab!);
-              // webivewTabViewerController.closeWebViewTab(currentTab);
-              // broswer.spaces[broswer.currentSpaceIndex.value]
-              //     .currentSelectedTab = null;
-            }
-          }
-        },
       ),
     );
   }
 }
+// PopScope(
+//         canPop: true,
+//         child: 
+//         onPopInvoked: (didPop) async {
+//           // ScaffoldMessenger.of(context).showSnackBar(
+//           //   SnackBar(
+//           //     content:
+//           //         Text('Pop invoked ${didPop ? 'successfully' : 'failed'}'),
+//           //   ),
+//           // );
+//           if (didPop) {
+//             var currentTab = webivewTabViewerController
+//                 .webViewTabs[webivewTabViewerController.currentTabIndex.value];
+//             if (await currentTab.canGoBack()) {
+//               currentTab.goBack();
+//             } else {
+//               broswer.closeTab(
+//                   (broswer.spaces[broswer.currentSpaceIndex.value] as Space)
+//                       .currentSelectedTab!);
+//               // webivewTabViewerController.closeWebViewTab(currentTab);
+//               // broswer.spaces[broswer.currentSpaceIndex.value]
+//               //     .currentSelectedTab = null;
+//             }
+//           }
+//         },
+//       ),

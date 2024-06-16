@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_fancy_tree_view/flutter_fancy_tree_view.dart';
 import 'package:get/get.dart';
 import 'package:orbit/models/folder.dart';
 import 'package:orbit/models/space.dart';
@@ -16,6 +17,7 @@ class Broswer extends GetxController {
   var currentSpaceIndex = 0.obs;
 
   PageController? pageviewController;
+  TreeController? treeController;
 
   WebviewTabViewerController webviewTabViewerController = Get.find();
 
@@ -133,6 +135,7 @@ class Broswer extends GetxController {
     currentSpace.currentSelectedTab = null;
 
     webviewTabViewerController.closeWebViewTabByTabId(tab.id);
+    treeController?.rebuild();
   }
 
   Future<void> renameTab(TabNode tab, String newName) async {
@@ -143,4 +146,21 @@ class Broswer extends GetxController {
   // Future<void> deleteTab(TabNode tab) async {
   //   webviewTabViewerController.closeWebViewTabByTabId(tab.id);
   // }
+  Future<bool> goBackWebviewTab() async {
+    if (webviewTabViewerController.currentTabIndex.value != -1) {
+      var currentTab = webviewTabViewerController
+          .webViewTabs[webviewTabViewerController.currentTabIndex.value];
+      if (await currentTab.canGoBack()) {
+        currentTab.goBack();
+      } else {
+        closeTab(
+            (spaces[currentSpaceIndex.value] as Space).currentSelectedTab!);
+        // webivewTabViewerController.closeWebViewTab(currentTab);
+        // broswer.spaces[broswer.currentSpaceIndex.value]
+        //     .currentSelectedTab = null;
+      }
+      return true;
+    }
+    return false;
+  }
 }

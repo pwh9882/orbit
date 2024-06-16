@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:orbit/views/content_view/custom_content_drawer.dart';
+import 'package:flutter/services.dart';
+import 'package:get/get.dart';
+import 'package:orbit/models/broswer.dart';
+import 'package:orbit/models/space.dart';
 import 'package:orbit/views/sidebar_view/custom_sidebar_drawer.dart';
 
 class SplitView extends StatelessWidget {
@@ -17,12 +20,47 @@ class SplitView extends StatelessWidget {
   final double breakpoint;
   final double menuWidth;
 
+  Future<bool?> showBackDialog(BuildContext context) {
+    return showDialog<bool>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Are you sure?'),
+          content: const Text(
+            'Are you sure you want to leave this page?',
+          ),
+          actions: <Widget>[
+            TextButton(
+              style: TextButton.styleFrom(
+                textStyle: Theme.of(context).textTheme.labelLarge,
+              ),
+              child: const Text('Nevermind'),
+              onPressed: () {
+                Navigator.pop(context, false);
+              },
+            ),
+            TextButton(
+              style: TextButton.styleFrom(
+                textStyle: Theme.of(context).textTheme.labelLarge,
+              ),
+              child: const Text('Leave'),
+              onPressed: () {
+                Navigator.pop(context, true);
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
+    Widget widget;
     if (screenWidth >= breakpoint) {
       // widescreen: menu on the left, content on the right
-      return Row(
+      widget = Row(
         children: [
           SizedBox(
             width: menuWidth,
@@ -39,7 +77,7 @@ class SplitView extends StatelessWidget {
       );
     } else {
       // narrow screen: show content, menu inside drawer
-      return Scaffold(
+      widget = Scaffold(
         body: content,
         drawer: SizedBox(
           width: menuWidth,
@@ -51,5 +89,26 @@ class SplitView extends StatelessWidget {
         drawerEdgeDragWidth: screenWidth * 0.5,
       );
     }
+
+    var broswer = Get.find<Broswer>();
+
+    return PopScope(
+      canPop: false,
+      onPopInvoked: (bool didPop) async {
+        if (didPop) {
+          return;
+        }
+
+        if (await broswer.goBackWebviewTab()) {
+          return;
+        }
+
+        final bool shouldPop = await showBackDialog(context) ?? false;
+        if (context.mounted && shouldPop) {
+          SystemNavigator.pop();
+        }
+      },
+      child: widget,
+    );
   }
 }
