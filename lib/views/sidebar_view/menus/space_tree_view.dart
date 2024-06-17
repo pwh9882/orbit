@@ -99,6 +99,7 @@ class SpaceTreeController extends GetxController {
     await parent?.removeChild(entry.node);
     if (entry.node is TabNode) {
       broswer.closeTab((entry.node as TabNode));
+      treeController.rebuild();
     } else {
       treeController.rebuild();
     }

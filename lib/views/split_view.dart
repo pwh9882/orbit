@@ -85,7 +85,7 @@ class SplitView extends StatelessWidget {
           ),
         ),
         // endDrawer: const CustomContentDrawer(),
-        drawerEdgeDragWidth: screenWidth * 0.25,
+        drawerEdgeDragWidth: screenWidth * 0.3,
       );
     }
 
