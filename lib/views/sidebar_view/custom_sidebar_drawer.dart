@@ -8,8 +8,6 @@ class CustomSidebarDrawerController extends GetxController
   late Animation<double> _animation;
 
   RxDouble offset = 0.0.obs;
-  final int _throttleTimeInMilliseconds = 8;
-  DateTime _lastUpdateCall = DateTime.now();
 
   @override
   void onInit() {
@@ -33,12 +31,6 @@ class CustomSidebarDrawerController extends GetxController
   }
 
   void handleDragUpdate(DragUpdateDetails details) {
-    if (DateTime.now().difference(_lastUpdateCall).inMilliseconds <
-        _throttleTimeInMilliseconds) {
-      return;
-    }
-    _lastUpdateCall = DateTime.now();
-
     double newOffset = math.min(0.0, offset.value + details.delta.dx);
     updateOffset(newOffset);
     // debugPrint('offset: $offset');
@@ -72,7 +64,7 @@ class CustomSidebarDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final controller = CustomSidebarDrawerController();
+    final controller = Get.put(CustomSidebarDrawerController());
     double screenWidth = MediaQuery.of(context).size.width;
 
     return GestureDetector(

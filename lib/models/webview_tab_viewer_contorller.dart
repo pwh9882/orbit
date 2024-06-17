@@ -52,8 +52,6 @@ class WebviewTabViewerController extends GetxController {
 
   void selectWebViewTabByTabId(String tabId) {
     final webViewTab = webViewTabs.firstWhere((tab) => tab.tabId == tabId);
-    debugPrint('input tabId: $tabId');
-    debugPrint('selectWebViewTabByTabId: ${webViewTab.tabId}');
 
     _selectWebViewTab(webViewTab);
   }
@@ -69,11 +67,6 @@ class WebviewTabViewerController extends GetxController {
     final webViewIndex = webViewTabs.indexOf(webViewTab);
     currentTabIndex.value = webViewIndex;
     await webViewTabs[webViewIndex].resume();
-    Fluttertoast.showToast(
-      msg: 'Selected WebView Index: $webViewIndex',
-      toastLength: Toast.LENGTH_SHORT,
-      gravity: ToastGravity.BOTTOM,
-    );
     currentTabUrl.value = webViewTabs[webViewIndex].currentUrl ?? '';
     currentTabUrlHost.value = Uri.parse(currentTabUrl.value).host;
   }

@@ -243,7 +243,8 @@ class _WebViewTabState extends State<WebViewTab> with WidgetsBindingObserver {
               },
               onTitleChanged: (controller, title) {
                 _title = title ?? '';
-                broswer.renameCurrentTab(_title);
+
+                broswer.renameCurrentTab(widget.tabId, _title);
 
                 widget.onStateUpdated.call();
               },

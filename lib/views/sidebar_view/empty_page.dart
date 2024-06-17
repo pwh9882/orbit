@@ -10,9 +10,9 @@ class EmptyPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return PageScaffold(
-      title: 'First Page',
+      title: 'Oribt',
       body: Center(
-        child: Text('First Page',
+        child: Text('Sidebar에서 새 탭을 열어보세요.',
             style: Theme.of(context).textTheme.headlineMedium),
       ),
     );

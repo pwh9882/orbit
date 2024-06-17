@@ -140,13 +140,22 @@ class Broswer extends GetxController {
     treeController?.rebuild();
   }
 
-  Future<void> renameCurrentTab(String newName) async {
+  Future<void> setCustomTitleToCurrentTab(String customTitle) async {
     Space currentSpace = spaces[currentSpaceIndex.value];
-    renameTab(currentSpace.currentSelectedTab!, newName);
+    currentSpace.currentSelectedTab!.customTitle = customTitle;
+    treeController?.rebuild();
+    await dao.updateNode(currentSpace.currentSelectedTab!);
+  }
+
+  Future<void> renameCurrentTab(String tabId, String newName) async {
+    Space currentSpace = spaces[currentSpaceIndex.value];
+    if (currentSpace.currentSelectedTab!.id == tabId) {
+      renameTab(currentSpace.currentSelectedTab!, newName);
+    }
   }
 
   Future<void> renameTab(TabNode tab, String newName) async {
-    tab.customTitle = newName;
+    tab.name = newName;
     treeController?.rebuild();
     await dao.updateNode(tab);
   }
@@ -179,6 +188,30 @@ class Broswer extends GetxController {
 
       var parsedUrl = UrlParser().parse(url);
       webviewTabViewerController.loadUrlToTab(parsedUrl);
+    }
+  }
+
+  Future<void> loadOriginUrlToCurrentTab() async {
+    Space currentSpace = spaces[currentSpaceIndex.value];
+    if (currentSpace.currentSelectedTab != null) {
+      // currentSpace.currentSelectedTab!.url = url;
+      var tab = currentSpace.currentSelectedTab as TabNode;
+      if (tab.url == webviewTabViewerController.currentTabUrl.value) {
+        return;
+      }
+
+      var parsedUrl = UrlParser().parse(tab.url);
+      webviewTabViewerController.loadUrlToTab(parsedUrl);
+    }
+  }
+
+  Future<void> replaceOriginUrlToCurrentUrl() async {
+    Space currentSpace = spaces[currentSpaceIndex.value];
+    if (currentSpace.currentSelectedTab != null) {
+      // currentSpace.currentSelectedTab!.url = url;
+      var tab = currentSpace.currentSelectedTab as TabNode;
+      tab.url = webviewTabViewerController.currentTabUrl.value;
+      await dao.updateNode(tab);
     }
   }
 }

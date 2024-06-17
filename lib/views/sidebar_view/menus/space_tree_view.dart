@@ -1,4 +1,6 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_fancy_tree_view/flutter_fancy_tree_view.dart';
 import 'package:get/get.dart';
 import 'package:orbit/models/broswer.dart';
@@ -167,19 +169,32 @@ class SpaceTreeView extends StatelessWidget {
                                 builder: (BuildContext context) {
                                   String userInput = '';
                                   return AlertDialog(
-                                    title: const Text('Edit Space Name'),
-                                    content: Column(
+                                    // title: const Text('Edit Space Name'),
+                                    content: Row(
                                       mainAxisSize: MainAxisSize.min,
                                       children: <Widget>[
-                                        TextField(
-                                          controller: TextEditingController()
-                                            ..text = controller.broswer
-                                                .spaces[spaceIndex].name,
-                                          onChanged: (value) =>
-                                              userInput = value,
-                                          decoration: const InputDecoration(
-                                            labelText: "Name",
+                                        Expanded(
+                                          child: TextField(
+                                            controller: TextEditingController()
+                                              ..text = controller.broswer
+                                                  .spaces[spaceIndex].name,
+                                            onChanged: (value) =>
+                                                userInput = value,
+                                            decoration: const InputDecoration(
+                                              labelText: "Space Name",
+                                            ),
                                           ),
+                                        ),
+                                        TextButton(
+                                          child: const Text('Save'),
+                                          onPressed: () {
+                                            Get.back(); // Close the dialog
+                                            if (userInput.isNotEmpty) {
+                                              controller.broswer
+                                                  .renameSpace(userInput);
+                                              controller.update();
+                                            }
+                                          },
                                         ),
                                         // TextField(
                                         //   onChanged: (value) => url = value,
@@ -189,19 +204,16 @@ class SpaceTreeView extends StatelessWidget {
                                         // ),
                                       ],
                                     ),
-                                    actions: <Widget>[
-                                      TextButton(
-                                        child: const Text('Save'),
-                                        onPressed: () {
-                                          Get.back(); // Close the dialog
-                                          if (userInput.isNotEmpty) {
-                                            controller.broswer
-                                                .renameSpace(userInput);
-                                            controller.update();
-                                          }
-                                        },
-                                      ),
-                                    ],
+                                    shape: const RoundedRectangleBorder(
+                                      borderRadius:
+                                          BorderRadius.all(Radius.circular(12)),
+                                    ),
+                                    contentPadding: const EdgeInsets.only(
+                                      left: 20,
+                                      right: 0,
+                                      top: 10,
+                                      bottom: 10,
+                                    ),
                                   );
                                 },
                               );
@@ -216,6 +228,15 @@ class SpaceTreeView extends StatelessWidget {
                             },
                           ),
                         ],
+                      ),
+                      shape: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(12)),
+                      ),
+                      contentPadding: const EdgeInsets.only(
+                        left: 20,
+                        right: 0,
+                        top: 10,
+                        bottom: 10,
                       ),
                     );
                   },
@@ -253,7 +274,7 @@ class SpaceTreeView extends StatelessWidget {
                       controller.onNodeDeletePressed(entry);
                     },
                     onNodeNameRenamed: () {
-                      entry.node.updateNodeName(entry.node.name);
+                      entry.node.updateNode();
                       controller.treeController.rebuild();
                     },
                     onNodeClosePressed: () {
@@ -388,6 +409,12 @@ class TreeTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final broswer = Get.find<Broswer>();
+    String nodeName = entry.node.name;
+    if (entry.node is TabNode) {
+      nodeName = (entry.node as TabNode).customTitle ?? entry.node.name;
+    }
+
     Widget content = Row(
       children: [
         if (entry.node is Folder)
@@ -397,25 +424,20 @@ class TreeTile extends StatelessWidget {
                 : Icons.folder_open),
             onPressed: onFolderPressed,
           )
-        else
+        else if (entry.node is TabNode)
           IconButton(
-            onPressed: () => {},
+            onPressed: () => {
+              if ((entry.node as TabNode).isActivated)
+                broswer.loadOriginUrlToCurrentTab()
+            },
             icon: const Icon(Icons.insert_drive_file),
           ),
-        if (entry.node is TabNode)
-          Expanded(
-            child: Text(
-              (entry.node as TabNode).customTitle ?? entry.node.name,
-              overflow: TextOverflow.ellipsis,
-            ),
-          )
-        else
-          Expanded(
-            child: Text(
-              entry.node.name,
-              overflow: TextOverflow.ellipsis,
-            ),
+        Expanded(
+          child: Text(
+            nodeName,
+            overflow: TextOverflow.ellipsis,
           ),
+        ),
         if (entry.node is TabNode && (entry.node as TabNode).isSeleted)
           if ((entry.node as TabNode).isActivated)
             IconButton(
@@ -463,43 +485,65 @@ class TreeTile extends StatelessWidget {
                         builder: (BuildContext context) {
                           String userInput = '';
                           return AlertDialog(
-                            title: const Text('Edit Name'),
-                            content: Column(
+                            // title: const Text('Edit Name'),
+                            content: Row(
                               mainAxisSize: MainAxisSize.min,
                               children: <Widget>[
-                                TextField(
-                                  controller: TextEditingController()
-                                    ..text = entry.node.name,
-                                  onChanged: (value) => userInput = value,
-                                  decoration: const InputDecoration(
-                                    labelText: "Name",
+                                Expanded(
+                                  child: TextField(
+                                    controller: TextEditingController()
+                                      ..text = (entry.node is TabNode)
+                                          ? (entry.node as TabNode)
+                                                  .customTitle ??
+                                              entry.node.name
+                                          : entry.node.name,
+                                    onChanged: (value) => userInput = value,
+                                    decoration: const InputDecoration(
+                                      labelText: "Name",
+                                    ),
                                   ),
                                 ),
-                                // TextField(
-                                //   onChanged: (value) => url = value,
-                                //   decoration: const InputDecoration(
-                                //     hintText: "URL",
-                                //   ),
-                                // ),
+                                TextButton(
+                                  child: const Text('Save'),
+                                  onPressed: () {
+                                    Get.back(); // Close the dialog
+                                    if (userInput.isNotEmpty) {
+                                      if (entry.node is TabNode) {
+                                        (entry.node as TabNode).customTitle =
+                                            userInput;
+                                      } else {
+                                        entry.node.name = userInput;
+                                      }
+                                      onNodeNameRenamed();
+                                    }
+                                  },
+                                ),
                               ],
                             ),
-                            actions: <Widget>[
-                              TextButton(
-                                child: const Text('Save'),
-                                onPressed: () {
-                                  Get.back(); // Close the dialog
-                                  if (userInput.isNotEmpty) {
-                                    entry.node.name = userInput;
-                                    onNodeNameRenamed();
-                                  }
-                                },
-                              ),
-                            ],
+                            shape: const RoundedRectangleBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(12)),
+                            ),
+                            contentPadding: const EdgeInsets.only(
+                              left: 20,
+                              right: 0,
+                              top: 10,
+                              bottom: 10,
+                            ),
                           );
                         },
                       );
                     },
                   ),
+                  if (entry.node is TabNode)
+                    ListTile(
+                      leading: const Icon(Icons.refresh_rounded),
+                      title: const Text('Replace Pinned URL to current URL'),
+                      onTap: () {
+                        Navigator.pop(context);
+                        broswer.replaceOriginUrlToCurrentUrl();
+                      },
+                    ),
                   ListTile(
                     leading: const Icon(Icons.delete),
                     title: const Text('Delete'),
@@ -509,6 +553,15 @@ class TreeTile extends StatelessWidget {
                     },
                   ),
                 ],
+              ),
+              shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(12)),
+              ),
+              contentPadding: const EdgeInsets.only(
+                left: 20,
+                right: 0,
+                top: 10,
+                bottom: 10,
               ),
             );
           },

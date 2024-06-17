@@ -18,7 +18,7 @@ class DatabaseManager {
     final dbPath = await getApplicationDocumentsDirectory();
     final path = join(dbPath.path, filePath);
 
-    return await openDatabase(path, version: 2, onCreate: _createDB);
+    return await openDatabase(path, version: 3, onCreate: _createDB);
   }
 
   Future _createDB(Database db, int version) async {
@@ -28,6 +28,7 @@ class DatabaseManager {
     type TEXT NOT NULL,
     name TEXT NOT NULL,
     specificData TEXT,
+    customTitle TEXT,
     parentId TEXT,
     nodeIndex INTEGER NOT NULL,
     FOREIGN KEY (parentId) REFERENCES spaceItemTreeNodes(id)

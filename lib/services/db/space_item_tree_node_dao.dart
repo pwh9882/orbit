@@ -20,6 +20,7 @@ class SpaceItemDAO extends GetxService {
         'type': node.type.toString().split('.').last,
         'name': node.name,
         'specificData': node.specificData?.toString(),
+        'customTitle': (node is TabNode) ? (node).customTitle : null,
         'parentId': parentId,
         'nodeIndex': index,
       },
@@ -84,6 +85,7 @@ class SpaceItemDAO extends GetxService {
       {
         'name': node.name,
         'specificData': node.specificData?.toString(),
+        'customTitle': (node is TabNode) ? (node).customTitle : null,
         'nodeIndex': node.nodeIndex,
       },
       where: 'id = ?',
@@ -126,6 +128,7 @@ class SpaceItemDAO extends GetxService {
         return TabNode(
           name: map['name'],
           url: map['specificData'],
+          customTitle: map['customTitle'],
         )..id = map['id'];
       default:
         throw Exception('Unknown node type: $type');

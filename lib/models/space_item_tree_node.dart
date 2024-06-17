@@ -68,10 +68,8 @@ abstract class SpaceItemTreeNode {
     spaceItemDAO.syncChildNodeIndexes(this);
   }
 
-  Future<void> updateNodeName(String newName) async {
+  Future<void> updateNode() async {
     final spaceItemDAO = Get.find<SpaceItemDAO>();
-
-    name = newName;
     await spaceItemDAO.updateNode(this);
   }
 
