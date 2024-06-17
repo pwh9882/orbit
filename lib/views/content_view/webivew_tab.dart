@@ -169,7 +169,7 @@ class _WebViewTabState extends State<WebViewTab> with WidgetsBindingObserver {
         child: Stack(
           children: [
             Container(
-              color: Colors.white,
+              color: Colors.black,
             ),
             InAppWebView(
               windowId: widget.windowId,

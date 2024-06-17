@@ -78,7 +78,11 @@ class MenuSearchBar extends StatelessWidget {
                   ),
                 Expanded(
                   child: Padding(
-                    padding: const EdgeInsets.only(left: 0.0),
+                    padding: browser.webviewTabViewerController.currentTabIndex
+                                .value ==
+                            -1
+                        ? const EdgeInsets.only(left: 0.0)
+                        : const EdgeInsets.only(left: 20.0),
                     child: SizedBox(
                       child: Text(
                         browser.webviewTabViewerController.currentTabUrlHost
