@@ -31,7 +31,6 @@ class Broswer extends GetxController {
   Future<List<Space>> loadInitialTree() async {
     final spaces = await dao.getAllSpaces();
     for (final space in spaces) {
-      // final fullTree =
       await dao.getSpaceTree(space);
       // `fullTree`를 원하는 데이터 구조에 맞게 사용하거나 UI에 적용합니다.
     }
@@ -44,8 +43,6 @@ class Broswer extends GetxController {
     final newSpace = Space(name: name, children: []);
     await dao.insertNode(newSpace, index: spaces.length);
     spaces.add(newSpace);
-
-    // currentSpaceIndex.value = spaces.length - 1;
 
     pageviewController?.animateToPage(
       // currentSpaceIndex.value,
@@ -67,7 +64,6 @@ class Broswer extends GetxController {
     spaces.remove(space);
     currentSpaceIndex.value = max(0, currentSpaceIndex.value - 1);
     pageviewController?.animateToPage(
-      // currentSpaceIndex.value,
       max(0, currentSpaceIndex.value - 1),
       duration: const Duration(milliseconds: 500),
       curve: Curves.ease,
@@ -111,11 +107,9 @@ class Broswer extends GetxController {
     currentSpace.treeController?.rebuild();
 
     selectTab(newTab);
-    // currentSpace.currentSelectedTab = newTab;
-    // webviewTabViewerController.addWebViewTab(tabId: newTab.id, url: url);
   }
 
-  void selectTab(TabNode tab) {
+  Future<void> selectTab(TabNode tab) async {
     Space currentSpace = spaces[currentSpaceIndex.value];
 
     currentSpace.currentSelectedTab?.isSeleted = false;
@@ -150,19 +144,12 @@ class Broswer extends GetxController {
   Future<void> renameCurrentTab(String tabId, String newName) async {
     Space currentSpace = spaces[currentSpaceIndex.value];
     if (currentSpace.currentSelectedTab!.id == tabId) {
-      renameTab(currentSpace.currentSelectedTab!, newName);
+      currentSpace.currentSelectedTab!.name = newName;
+      treeController?.rebuild();
+      await dao.updateNode(currentSpace.currentSelectedTab!);
     }
   }
 
-  Future<void> renameTab(TabNode tab, String newName) async {
-    tab.name = newName;
-    treeController?.rebuild();
-    await dao.updateNode(tab);
-  }
-
-  // Future<void> deleteTab(TabNode tab) async {
-  //   webviewTabViewerController.closeWebViewTabByTabId(tab.id);
-  // }
   Future<bool> goBackWebviewTab() async {
     if (webviewTabViewerController.currentTabIndex.value != -1) {
       var currentTab = webviewTabViewerController
@@ -172,9 +159,6 @@ class Broswer extends GetxController {
       } else {
         closeTab(
             (spaces[currentSpaceIndex.value] as Space).currentSelectedTab!);
-        // webivewTabViewerController.closeWebViewTab(currentTab);
-        // broswer.spaces[broswer.currentSpaceIndex.value]
-        //     .currentSelectedTab = null;
       }
       return true;
     }

@@ -54,7 +54,7 @@ abstract class SpaceItemTreeNode {
 
     // Insert the node into the new parent's children list
     _children.insert(newIndex, node);
-    spaceItemDAO.syncChildNodeIndexes(node._parent!);
+    spaceItemDAO.syncChildNodeIndices(node._parent!);
   }
 
   Future<void> removeChild(SpaceItemTreeNode node) async {
@@ -65,7 +65,7 @@ abstract class SpaceItemTreeNode {
 
     // Remove the node from the parent's children list
     _children.remove(node);
-    spaceItemDAO.syncChildNodeIndexes(this);
+    spaceItemDAO.syncChildNodeIndices(this);
   }
 
   Future<void> updateNode() async {

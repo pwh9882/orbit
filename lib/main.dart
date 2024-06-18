@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
-import 'package:orbit/controllers/theme_controller.dart';
+import 'package:orbit/views/controllers/theme_controller.dart';
 import 'package:orbit/models/broswer.dart';
 import 'package:orbit/models/webview_tab_viewer_contorller.dart';
 import 'package:orbit/services/db/space_item_tree_node_dao.dart';

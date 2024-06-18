@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:orbit/controllers/theme_controller.dart';
+import 'package:orbit/views/controllers/theme_controller.dart';
 import 'package:orbit/themes/theme.dart';
 
 class ThemeChangeButton extends StatelessWidget {
